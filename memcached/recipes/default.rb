@@ -2,10 +2,15 @@
 
 INSTALL_DIR = "/opt"
 SRC_DIR = "#{INSTALL_DIR}/src"
-REDIS_VERSION = "1.4.13"
-REDIS_USER = "memcached"
+MEMCACHED_VERSION = "1.4.13"
+MEMCACHED_USER = "memcached"
+MEMCACHED_DIR = "#{INSTALL_DIR}/memcached-#{MEMCACHED_VERSION}"
 
-user REDIS_USER do
+package "libevent-dev" do
+  action :install
+end
+
+user MEMCACHED_USER do
   action :create
 end
 
@@ -22,15 +27,37 @@ end
 
 execute "install memcached" do
   cwd SRC_DIR
-  command "tar xvfz memcached-#{MEMCACHED_VERSION}.tar.gz && cd memcached-#{MEMCACHED_VERSION} && ./configure --prefix=#{INSTALL_DIR}/memcached-#{MEMCACHED_VERSION} && make && make install"
-  creates "#{INSTALL_DIR}/memcached-#{MEMCACHED_VERSION}/bin/memcached"
+  command "tar xvfz memcached-#{MEMCACHED_VERSION}.tar.gz && cd memcached-#{MEMCACHED_VERSION} && ./configure --prefix=#{MEMCACHED_DIR} && make && make install"
+  creates "#{MEMCACHED_DIR}/bin/memcached"
 end
 
 link "#{INSTALL_DIR}/memcached" do
-  to "#{INSTALL_DIR}/memcached-#{REDIS_VERSION}"
+  to MEMCACHED_DIR
 end
 
-# service "memcached" do
-#   supports :status => true, :restart => true
-#   action [ :enable, :start ]
-# end
+template "/etc/memcached.conf" do
+  source "memcached.conf.erb"
+  mode 0644
+  notifies :restart, "service[memcached]"
+  owner MEMCACHED_USER
+  group MEMCACHED_USER
+end
+
+template "#{MEMCACHED_DIR}/bin/start-memcached" do
+  source "start-memcached.erb"
+  mode 0744
+  owner MEMCACHED_USER
+  group MEMCACHED_USER
+end
+
+template "/etc/init.d/memcached" do
+  source "memcached.erb"
+  mode 0744
+  owner MEMCACHED_USER
+  group MEMCACHED_USER
+end
+
+service "memcached" do
+  supports :status => true, :restart => true
+  action [ :enable, :start ]
+end

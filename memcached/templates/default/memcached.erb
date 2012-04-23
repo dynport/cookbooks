@@ -1,0 +1,52 @@
+#! /bin/sh
+PATH=/opt/memcached/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/opt/memcached/bin/memcached
+DAEMONBOOTSTRAP=/opt/memcached/bin/start-memcached
+NAME=memcached
+DESC=memcached
+PIDFILE=/var/run/$NAME.pid
+
+test -x $DAEMON || exit 0
+test -x $DAEMONBOOTSTRAP || exit 0
+
+set -e
+
+. /lib/lsb/init-functions
+
+case "$1" in
+  start)
+  echo -n "Starting $DESC: "
+  start-stop-daemon --start --quiet --exec $DAEMONBOOTSTRAP
+  echo "$NAME."
+  ;;
+  stop)
+  echo -n "Stopping $DESC: "
+  start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE --exec $DAEMON
+  echo "$NAME."
+  rm -f $PIDFILE
+  ;;
+
+  restart|force-reload)
+  #
+  # If the "reload" option is implemented, move the "force-reload"
+  # option to the "reload" entry above. If not, "force-reload" is
+  # just the same as "restart".
+  #
+  echo -n "Restarting $DESC: "
+  start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE
+  rm -f $PIDFILE
+  sleep 1
+  start-stop-daemon --start --quiet --exec $DAEMONBOOTSTRAP
+  echo "$NAME."
+  ;;
+  status)
+  status_of_proc $DAEMON $NAME
+  ;;
+  *)
+  N=/etc/init.d/$NAME
+  echo "Usage: $N {start|stop|restart|force-reload|status}" >&2
+  exit 1
+  ;;
+esac
+
+exit 0
