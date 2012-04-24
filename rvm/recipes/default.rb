@@ -3,8 +3,20 @@ INSTALL_DIR = "/opt/local"
 SRC_DIR = "#{INSTALL_DIR}/src"
 USER_HOME = "/home/#{node[:user]}"
 
-package "curl" do
-  action :install
+user node[:user] do
+  action :create
+  home USER_HOME
+end
+
+directory USER_HOME do
+  action :create
+  owner node[:user]
+end
+
+%w(build-essential openssl libreadline6 libreadline6-dev curl zlib1g zlib1g-dev libssl-dev libxml2-dev libmysqlclient-dev).each do |package_name|
+  package package_name do
+    action :install
+  end
 end
 
 directory SRC_DIR do
