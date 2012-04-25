@@ -13,7 +13,7 @@ directory USER_HOME do
   owner node[:user]
 end
 
-%w(build-essential openssl libreadline6 libreadline6-dev curl zlib1g zlib1g-dev libssl-dev libxml2-dev libmysqlclient-dev).each do |package_name|
+%w(build-essential openssl libreadline6 libreadline6-dev curl zlib1g zlib1g-dev libssl-dev libxml2-dev libmysqlclient-dev git-core libxslt1-dev).each do |package_name|
   package package_name do
     action :install
   end
