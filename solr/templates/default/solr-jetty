@@ -1,0 +1,32 @@
+#!/bin/bash
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+USER=solr
+PIDFILE=/var/run/solr.pid
+SOLR_OPTIONS=""
+
+set -e
+
+# Parse command line parameters.
+case $1 in
+    start)
+        echo "starting SOLR"
+        start-stop-daemon -c $USER -m --pidfile $PIDFILE --start --chdir /opt/apache-solr/example --exec /usr/bin/java -- $SOLR_OPTIONS -jar start.jar 2>&1 | logger -t solr &
+        ;;
+    stop)
+        echo "stopping SOLR"
+        start-stop-daemon --pidfile $PIDFILE --stop
+        ;;
+    restart)
+  $0 stop
+  sleep 10s
+  $0 start
+        ;;
+    *)
+        # Print help
+        echo "Usage: $0 {start|stop|restart}" 1>&2
+        exit 1
+        ;;
+esac
+
+exit 0
