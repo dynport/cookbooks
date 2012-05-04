@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<solr sharedLib="lib" persistent="true">
+  <cores adminPath="/admin/cores">
+    <core name="<%= @node.solr.initial_core %>" instanceDir="<%= @node.solr.home %>" dataDir="<%= @node.solr.home%>/data/<%= @node.solr.initial_core %>"/>
+  </cores>
+</solr>

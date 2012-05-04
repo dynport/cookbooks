@@ -4,7 +4,7 @@ INSTALL_DIR = "/opt"
 SOLR_USER = "solr"
 SOLR_VERSION = "3.6.0"
 
-SOLR_DATA_DIR = "/data/solr"
+SOLR_DATA_DIR = @node.solr.home
 SOLR_DIR = "#{INSTALL_DIR}/apache-solr-#{SOLR_VERSION}"
 SRC_DIR = "#{INSTALL_DIR}/src"
 
@@ -50,6 +50,13 @@ end
 template "/etc/init.d/solr-jetty" do
   source "solr-jetty.erb"
   mode "0744"
+end
+
+template "/data/solr/solr.xml" do
+  action :create_if_missing
+  source "solr.xml"
+  mode "0744"
+  owner SOLR_USER
 end
 
 execute "cp -Rv #{File.expand_path("../../files/conf", __FILE__)} #{SOLR_DATA_DIR} && chown #{SOLR_USER} #{SOLR_DATA_DIR}" do
