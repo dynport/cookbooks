@@ -48,11 +48,10 @@ directory "#{SOLR_DATA_DIR}/conf" do
 end
 
 template "/etc/init.d/solr-jetty" do
-  source "solr-jetty"
+  source "solr-jetty.erb"
   mode "0744"
 end
 
-execute "cp -Rv #{File.expand_path("../../files/conf", __FILE__)} #{SOLR_DATA_DIR}" do
+execute "cp -Rv #{File.expand_path("../../files/conf", __FILE__)} #{SOLR_DATA_DIR} && chown #{SOLR_USER} #{SOLR_DATA_DIR}" do
   creates "#{SOLR_DATA_DIR}/conf/schema.xml"
 end
-

@@ -1,0 +1,5 @@
+default["solr"]["java_heap_size"]          = "64M"
+default["solr"]["java_new_size"]           = "16M"
+default["solr"]["java_survivor_ratio"]     = "3"
+default["solr"]["port"]                    = "4001"
+default["solr"]["home"]                    = "/data/solr"
