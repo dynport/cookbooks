@@ -1,7 +1,7 @@
 INSTALL_DIR = "/opt"
 SRC_DIR = "#{INSTALL_DIR}/src"
-REDIS_VERSION = "2.4.10"
-REDIS_USER = "redis"
+REDIS_VERSION = node.redis.version
+REDIS_USER = node.redis.user
 
 user REDIS_USER do
   action :create
@@ -21,7 +21,7 @@ end
 remote_file "#{SRC_DIR}/redis-#{REDIS_VERSION}.tar.gz" do
   source "http://redis.googlecode.com/files/redis-#{REDIS_VERSION}.tar.gz"
   mode "0644"
-  checksum "4d34482198cec272afd45d0390d4e1f32ee847094834133613a925012810ed21"
+  checksum node.redis.checksum
 end
 
 execute "install redis" do
