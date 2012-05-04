@@ -37,7 +37,6 @@ end
 template "/etc/redis.conf" do
   source "redis.conf.erb"
   mode 0644
-  notifies :restart, "service[redis-server]"
   owner REDIS_USER
   group REDIS_USER
 end
@@ -47,9 +46,4 @@ template "/etc/init.d/redis-server" do
   mode 0744
   owner REDIS_USER
   group REDIS_USER
-end
-
-service "redis-server" do
-  supports :status => true, :restart => true
-  action [ :enable, :start ]
 end
