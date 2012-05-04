@@ -1,8 +1,0 @@
-{
-  "run_list": [ "rvm" ],
-  "rvm" : {
-    "rubies": [ "1.9.3-p194", "1.9.2-p290-patched" ],
-    "default_ruby": "1.9.3-p194"
-  },
-  "user": "vagrant"
-}
