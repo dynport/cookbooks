@@ -2,7 +2,7 @@
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 USER=solr
-PIDFILE=/var/run/solr.pid
+PIDFILE=/var/run/<%= ["solr", @role].compact.join("_") %>.pid
 
 JAVA_HEAP_SIZE="<%= @node.solr.java_heap_size %>"
 JAVA_NEW_SIZE="<%= @node.solr.java_new_size %>"
@@ -23,10 +23,10 @@ JAVA_OPTS="$JAVA_OPTS -XX:NewSize=$JAVA_NEW_SIZE -XX:SurvivorRatio=$JAVA_SURVIVO
 #  $JAVA_OPTS $NEWRELIC_OPTS
 START_PREFIX="start-stop-daemon -c $USER -m --pidfile $PIDFILE --start --chdir /opt/apache-solr/example --exec /usr/bin/java -- $JAVA_OPTS"
 
-SOLR_HOME="<%= @node.solr.home %>"
-SOLR_PORT="<%= @node.solr.port %>"
+SOLR_HOME="<%= @solr_home %>"
+SOLR_PORT="<%= @solr_port %>"
 SOLR_OPTS="-Dsolr.solr.home=$SOLR_HOME -Djetty.port=$SOLR_PORT"
-
+SOLR_MASTER_URL="<%= @node.solr.master_url %>"
 
 set -e
 
@@ -34,7 +34,7 @@ set -e
 case $1 in
     start)
         echo "starting SOLR"
-        $($START_PREFIX $SOLR_OPTS -jar start.jar 2>&1 | logger -t solr &)
+        $($START_PREFIX $SOLR_OPTS <%= @master_slave_options %> -jar start.jar 2>&1 | logger -t solr &)
         ;;
     stop)
         echo "stopping SOLR"
@@ -47,7 +47,7 @@ case $1 in
         ;;
     *)
         # Print help
-        echo "Usage: $0 {start|stop|restart}" 1>&2
+        echo "Usage: $0 {start|start_master|start_slave|    stop|restart}" 1>&2
         exit 1
         ;;
 esac
