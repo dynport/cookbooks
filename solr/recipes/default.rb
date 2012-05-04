@@ -4,7 +4,7 @@ INSTALL_DIR = "/opt"
 SOLR_USER = "solr"
 SOLR_VERSION = "3.6.0"
 
-SOLR_DATA_DIR = @node.solr.home
+SOLR_DATA_DIR = node.solr.home
 SOLR_DIR = "#{INSTALL_DIR}/apache-solr-#{SOLR_VERSION}"
 SRC_DIR = "#{INSTALL_DIR}/src"
 
@@ -40,7 +40,7 @@ template "/etc/init.d/solr_master" do
   mode "0744"
   variables(
     :solr_home => "#{SOLR_DATA_DIR}/master",
-    :solr_port => @node.solr.master_port,
+    :solr_port => node.solr.master_port,
     :role => "master",
     :master_slave_options => "-Denable.master=true"
   )
@@ -51,9 +51,9 @@ template "/etc/init.d/solr_slave" do
   mode "0744"
   variables(
     :solr_home => "#{SOLR_DATA_DIR}/slave",
-    :solr_port => @node.solr.slave_port,
+    :solr_port => node.solr.slave_port,
     :role => "slave",
-    :master_slave_options => "-Denable.slave=true -Dmaster.url=#{@node.solr.master_url}"
+    :master_slave_options => "-Denable.slave=true -Dmaster.url=#{node.solr.master_url}"
   )
 end
 
