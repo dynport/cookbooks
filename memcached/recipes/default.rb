@@ -2,8 +2,8 @@
 
 INSTALL_DIR = "/opt"
 SRC_DIR = "#{INSTALL_DIR}/src"
-MEMCACHED_VERSION = "1.4.13"
-MEMCACHED_USER = "memcached"
+MEMCACHED_VERSION = node.memcached.version
+MEMCACHED_USER = node.memcached.user
 MEMCACHED_DIR = "#{INSTALL_DIR}/memcached-#{MEMCACHED_VERSION}"
 
 package "libevent-dev" do
@@ -22,7 +22,7 @@ end
 remote_file "#{SRC_DIR}/memcached-#{MEMCACHED_VERSION}.tar.gz" do
   source "http://memcached.googlecode.com/files/memcached-#{MEMCACHED_VERSION}.tar.gz"
   mode "0644"
-  checksum "cb0b8b87aa57890d2327906a11f2f1b61b8d870c0885b54c61ca46f954f27e29"
+  checksum node.memcached.checksum
 end
 
 execute "install memcached" do
