@@ -38,7 +38,6 @@ end
 template "/etc/memcached.conf" do
   source "memcached.conf.erb"
   mode 0644
-  notifies :restart, "service[memcached]"
   owner MEMCACHED_USER
   group MEMCACHED_USER
 end
@@ -55,9 +54,4 @@ template "/etc/init.d/memcached" do
   mode 0744
   owner MEMCACHED_USER
   group MEMCACHED_USER
-end
-
-service "memcached" do
-  supports :status => true, :restart => true
-  action [ :enable, :start ]
 end
