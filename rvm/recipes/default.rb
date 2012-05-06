@@ -26,6 +26,10 @@ bash "install rvm" do
   creates "#{RVM_PATH}/scripts/rvm"
 end
 
+file "/etc/profile.d/rvm.sh" do
+  action :delete
+end
+
 # if default_ruby = node[:rvm][:default_ruby]
 #   bash "set default rvm" do
 #     environment("rvm_path" => "#{USER_HOME}/.rvm", "HOME" => USER_HOME)
