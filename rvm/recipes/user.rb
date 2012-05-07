@@ -17,12 +17,6 @@ end
   end
 end
 
-template "/home/#{node.user}/.profile" do
-  source "profile.erb"
-  owner node.user
-  mode "644"
-end
-
 template "/home/#{node.user}/.profile.d/rvm" do
   source "rvm.profile.erb"
   owner node.user
