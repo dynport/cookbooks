@@ -1,6 +1,6 @@
 require "pathname"
-USER = node[:user] || node.rvm.user
-USER_HOME = "/home/#{USER}"
+USER = rvm_user
+USER_HOME = rvm_user_home
 SRC_DIR = "#{USER_HOME}/src"
 RVM_VERSION = node.rvm.version
 RVM_DIR = "#{USER_HOME}/.rvm-#{RVM_VERSION}"
@@ -47,7 +47,7 @@ def install_rvm_ruby(version)
   end
 end
 
-link "#{USER_HOME}/.rvm" do
+link rvm_symlink do
   to RVM_DIR
   not_if "test -d #{USER_HOME}/.rvm && test ! -L #{USER_HOME}/.rvm"
   owner USER

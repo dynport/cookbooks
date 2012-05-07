@@ -21,4 +21,7 @@ template "/home/#{node.user}/.profile.d/rvm" do
   source "rvm.profile.erb"
   owner node.user
   mode "644"
+  variables(
+    :rvm_path => rvm_symlink
+  )
 end
