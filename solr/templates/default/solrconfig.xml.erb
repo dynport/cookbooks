@@ -1018,6 +1018,9 @@
     <lst name="slave">
       <str name="enable">${enable.slave:false}</str>
       <str name="masterUrl">${master.url:""}</str>
+      <% if @poll_interval %>
+      <str name="pollInterval"><%= @poll_interval %></str>
+      <% end %>
     </lst>
   </requestHandler>
 

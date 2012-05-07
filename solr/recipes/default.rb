@@ -64,16 +64,10 @@ end
     recursive true
   end
 
-  directory "#{solr_home}/conf" do
-    action :create
-    owner SOLR_USER
-    recursive true
-  end
-
   template "#{solr_home}/solr.xml" do
     action :create_if_missing
     source "solr.xml"
-    mode "0744"
+    mode "0644"
     owner SOLR_USER
     variables(
       :solr_home => solr_home
@@ -83,5 +77,14 @@ end
   execute "init solr home" do
     command "cp -Rv #{File.expand_path("../../files/conf", __FILE__)} #{solr_home} && chown #{SOLR_USER} #{solr_home}"
     creates "#{solr_home}/conf/schema.xml"
+  end
+
+  template "#{solr_home}/conf/solrconfig.xml" do
+    mode "0644"
+    owner SOLR_USER
+    source "solrconfig.xml.erb"
+    variables(
+      :poll_interval => node.solr[:replication_poll_interval]
+    )
   end
 end
