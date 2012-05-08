@@ -11,7 +11,11 @@ RVM_DIR = "#{USER_HOME}/.rvm-#{RVM_VERSION}"
   end
 end
 
-user USER
+user USER do
+  shell "/bin/bash"
+end
+
+
 directory USER_HOME do
   owner USER
 end
@@ -39,22 +43,13 @@ file "/etc/profile.d/rvm.sh" do
   action :delete
 end
 
-def install_rvm_ruby(version)
-  bash "install #{version}" do
-    code ". #{RVM_DIR}/scripts/rvm && rvm install #{version}"
-    environment("rvm_path" => RVM_DIR)
-    creates "#{RVM_DIR}/rubies/#{version}/bin/ruby"
-  end
+template "#{rvm_user_home}/.rvmrc" do
+  mode "0644"
+  owner USER
 end
 
 link rvm_symlink do
   to RVM_DIR
   not_if "test -d #{USER_HOME}/.rvm && test ! -L #{USER_HOME}/.rvm"
   owner USER
-end
-
-if node[:rvm] && node[:rvm][:rubies]
-  node.rvm.rubies.each do |ruby|
-    install_rvm_ruby(ruby)
-  end
 end
