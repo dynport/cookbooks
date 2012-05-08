@@ -18,7 +18,7 @@ def install_rvm_ruby(version)
   bash "install #{version}" do
     code ". #{rvm_dir}/scripts/rvm && rvm install #{version}"
     environment("rvm_path" => rvm_dir)
-    creates "#{rvm_dir}/rubies/#{version}/bin/ruby"
+    not_if "test -f #{rvm_dir}/rubies/#{version}/bin/ruby"
     user rvm_user
   end
 end
