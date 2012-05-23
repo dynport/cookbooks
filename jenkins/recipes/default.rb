@@ -1,7 +1,7 @@
 include_recipe "java"
 
 INSTALL_DIR = "/opt"
-JENKINS_USER = "jenkins"
+JENKINS_USER = node.jenkins.user
 JENKINS_DIR = "#{INSTALL_DIR}/jenkins-#{node.jenkins.version}"
 SRC_DIR = "#{INSTALL_DIR}/src"
 
@@ -11,9 +11,9 @@ user JENKINS_USER do
   shell "/bin/bash"
 end
 
-directory "/home/jenkins" do
+directory "/home/#{JENKINS_USER}" do
   mode "755"
-  owner "jenkins"
+  owner JENKINS_USER
 end
 
 directory SRC_DIR do

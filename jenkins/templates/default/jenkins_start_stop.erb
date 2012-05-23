@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-USER=jenkins
+USER=<%= node.jenkins.user %>
 PIDFILE=/var/run/jenkins.pid
 
 JENKINS_OPTS="--httpPort=<%= node.jenkins.port %> --httpListenAddress=<%= node.jenkins.address %>"
@@ -11,7 +11,7 @@ JENKINS_OPTS="$JENKINS_OPTS --prefix=<%= node.jenkins[:prefix] %>"
 
 START_PREFIX="start-stop-daemon -c $USER -m --pidfile $PIDFILE --start --chdir /home/jenkins --exec /usr/bin/java -- "
 
-JENKINS_HOME="/home/jenkins/jenkins"
+JENKINS_HOME="/home/<%= node.jenkins.user %>/jenkins"
 
 set -e
 
