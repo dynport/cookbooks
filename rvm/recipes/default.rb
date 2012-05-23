@@ -15,7 +15,6 @@ user USER do
   shell "/bin/bash"
 end
 
-
 directory USER_HOME do
   owner USER
 end

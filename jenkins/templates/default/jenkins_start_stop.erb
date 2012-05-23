@@ -1,0 +1,40 @@
+#!/bin/bash
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+USER=jenkins
+PIDFILE=/var/run/jenkins.pid
+
+JENKINS_OPTS="--httpPort=<%= node.jenkins.port %> --httpListenAddress=<%= node.jenkins.address %>"
+<% if node.jenkins[:prefix] %>
+JENKINS_OPTS="$JENKINS_OPTS --prefix=<%= node.jenkins[:prefix] %>"
+<% end %>
+
+START_PREFIX="start-stop-daemon -c $USER -m --pidfile $PIDFILE --start --chdir /home/jenkins --exec /usr/bin/java -- "
+
+JENKINS_HOME="/home/jenkins/jenkins"
+
+set -e
+
+# Parse command line parameters.
+case $1 in
+    start)
+        echo "starting jenkins"
+        $($START_PREFIX -jar /opt/jenkins/lib/jenkins.war $JENKINS_OPTS 2>&1 | logger -t jenkins &)
+        ;;
+    stop)
+        echo "stopping jenkins"
+        start-stop-daemon --pidfile $PIDFILE --stop
+        ;;
+    restart)
+  $0 stop
+  sleep 10s
+  $0 start
+        ;;
+    *)
+        # Print help
+        echo "Usage: $0 {start|start_master|start_slave|    stop|restart}" 1>&2
+        exit 1
+        ;;
+esac
+
+exit 0
