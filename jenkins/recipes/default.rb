@@ -45,3 +45,15 @@ template "/etc/init.d/jenkins" do
   source "jenkins_start_stop.erb"
   mode "0744"
 end
+
+# directory "/home/#{JENKINS_USER}/jenkins/plugins" do
+#   owner JENKINS_USER
+#   mode "755"
+# end
+
+# node.jenkins.plugins.each do |plugin|
+#   remote_file "/home/#{JENKINS_USER}/jenkins/plugins"
+# end
+
+# http://updates.jenkins-ci.org/latest/chucknorris.hpi
+# chucknorris greenballs github git envinject karotz
