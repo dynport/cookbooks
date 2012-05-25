@@ -41,6 +41,7 @@ template "/etc/init.d/solr_master" do
   variables(
     :solr_home => "#{SOLR_DATA_DIR}/master",
     :solr_port => node.solr.master_port,
+    :solr_host => node.solr[:host],
     :role => "master",
     :master_slave_options => "-Denable.master=true"
   )
