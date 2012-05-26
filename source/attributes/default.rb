@@ -1,0 +1,1 @@
+default[:source][:install_dir] = "/opt"
