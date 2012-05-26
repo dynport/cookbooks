@@ -1,0 +1,37 @@
+server {
+    listen       80;
+    server_name  <%= @server_names.join(" ") %>;
+
+    #charset koi8-r;
+
+    #access_log  logs/host.access.log  main;
+
+    location / {
+        root   <%= @locaton %>;
+        index  index.html index.htm;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   html;
+    }
+
+    # use this for e.g. phpBB
+    # location ~ /(config\.php|common\.php|includes|cache|files|store|images/avatars/upload) { 
+    #     deny all; 
+    # }
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    location ~ \.php$ {
+       root           /opt/nginx/html;
+       include /opt/nginx/conf/fastcgi_params; #or whatever you named it
+       fastcgi_pass  127.0.0.1:<%= @fastcgi_port %>;
+       fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+       fastcgi_index  index.php;
+    }
+}
