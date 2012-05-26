@@ -25,6 +25,12 @@ remote_file "#{SRC_DIR}/nginx-#{NGINX_VERSION}.tar.gz" do
   mode "0644"
 end
 
+execute "install nginx" do
+  cwd SRC_DIR
+  command "tar xvfz nginx-#{NGINX_VERSION}.tar.gz && cd nginx-#{NGINX_VERSION} && ./configure --prefix=#{INSTALL_DIR}/nginx-#{NGINX_VERSION} && make && make install"
+  creates "#{INSTALL_DIR}/nginx-#{NGINX_VERSION}/sbin/nginx"
+end
+
 template "#{INSTALL_DIR}/nginx-#{NGINX_VERSION}/conf/nginx.conf" do
   source "nginx.conf.erb"
 end
@@ -32,12 +38,6 @@ end
 template "/etc/init.d/nginx" do
   source "nginx.init.erb"
   mode "0755"
-end
-
-execute "install nginx" do
-  cwd SRC_DIR
-  command "tar xvfz nginx-#{NGINX_VERSION}.tar.gz && cd nginx-#{NGINX_VERSION} && ./configure --prefix=#{INSTALL_DIR}/nginx-#{NGINX_VERSION} && make && make install"
-  creates "#{INSTALL_DIR}/nginx-#{NGINX_VERSION}/sbin/nginx"
 end
 
 link node.nginx.dir do
