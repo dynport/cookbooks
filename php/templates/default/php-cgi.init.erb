@@ -1,6 +1,6 @@
 #!/bin/bash
 BIND=127.0.0.1:<%= node.php.fcgi_port %>
-USER=www-data
+USER=<%= node.www_user %>
 PHP_FCGI_CHILDREN=<%= node.php.fcgi_children %>
 PHP_FCGI_MAX_REQUESTS=<%= node.php.fcgi_max_requests %>
 

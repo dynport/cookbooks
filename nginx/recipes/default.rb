@@ -1,7 +1,7 @@
 INSTALL_DIR = node.nginx.install_root
 SRC_DIR = "#{INSTALL_DIR}/src"
 NGINX_VERSION = node.nginx.version
-NGINX_USER = node.nginx.user
+NGINX_USER = node.www_user
 
 %w(libpcre3 libpcre3-dev libpcrecpp0 zlib1g-dev libssl-dev libgd2-xpm-dev).each { |pkg| package pkg }
 
