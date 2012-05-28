@@ -13,5 +13,5 @@ execute "install node" do
 end
 
 link "/opt/#{NODE_PREFIX}" do
-  "/opt/node"
+  to "/opt/node"
 end
