@@ -12,6 +12,6 @@ execute "install node" do
   creates "/opt/#{NODE_PREFIX}/bin/node"
 end
 
-link "/opt/#{NODE_PREFIX}" do
-  to "/opt/node"
+link "/opt/node" do
+  to "/opt/#{NODE_PREFIX}"
 end
