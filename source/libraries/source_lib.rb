@@ -3,8 +3,10 @@ def src_dir
 end
 
 def download_file(url)
-  remote_file "#{src_dir}/#{File.basename(url)}" do
+  path = "#{src_dir}/#{File.basename(url)}"
+  remote_file path do
     source url
     mode "644"
+    not_if "test -e #{path}"
   end
 end
