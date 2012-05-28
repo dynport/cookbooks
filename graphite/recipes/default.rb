@@ -1,4 +1,5 @@
 include_recipe "source"
+include_recipe "nginx"
 
 %w(libcairo2-dev python-cairo python-twisted python-django python-django-tagging gunicorn python-memcache).each do |pkg|
   package pkg
@@ -25,6 +26,7 @@ user USER do
 end
 
 GRAPHITE_DIR = "/opt/graphite"
+DJANGO_ROOT = "#{GRAPHITE_DIR}/webapp/graphite"
 
 directory GRAPHITE_DIR do
   owner USER
@@ -53,7 +55,7 @@ execute "unpack graphite-web" do
 end
 
 execute "create django database" do
-  cwd "#{GRAPHITE_DIR}/webapp/graphite"
+  cwd DJANGO_ROOT
   command "python ./manage.py syncdb --noinput"
   user USER
   creates "#{GRAPHITE_DIR}/storage/graphite.db"
@@ -91,4 +93,6 @@ template "/etc/init.d/graphite" do
   mode "755"
 end
 
-# python /opt/graphite/webapp/graphite/manage.py syncdb --noinput
+nginx_unix_proxy(:name => "graphite", :socket_path => "/tmp/graphite.socket", :root => DJANGO_ROOT, 
+  :location => "/", :server_name => node.graphite.server_name, :interface => node.graphite.nginx_interface, :port => node.graphite.nginx_port
+)
