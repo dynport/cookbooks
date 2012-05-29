@@ -50,5 +50,4 @@ end
 link rvm_symlink do
   to RVM_DIR
   not_if "test -d #{USER_HOME}/.rvm && test ! -L #{USER_HOME}/.rvm"
-  owner USER
 end
