@@ -1,4 +1,4 @@
-INSTALL_DIR = "/opt"
+INSTALL_DIR = node.source.install_dir
 SRC_DIR = "#{INSTALL_DIR}/src"
 REDIS_VERSION = node.redis.version
 REDIS_USER = node.redis.user
@@ -18,11 +18,7 @@ directory "/var/lib/redis" do
   owner REDIS_USER
 end
 
-remote_file "#{SRC_DIR}/redis-#{REDIS_VERSION}.tar.gz" do
-  source "http://redis.googlecode.com/files/redis-#{REDIS_VERSION}.tar.gz"
-  mode "0644"
-  checksum node.redis.checksum
-end
+download_file "http://redis.googlecode.com/files/redis-#{REDIS_VERSION}.tar.gz"
 
 execute "install redis" do
   cwd SRC_DIR

@@ -1,4 +1,4 @@
-INSTALL_DIR = node.nginx.install_root
+INSTALL_DIR = node.source.install_dir
 SRC_DIR = "#{INSTALL_DIR}/src"
 NGINX_VERSION = node.nginx.version
 NGINX_USER = node.www_user
@@ -20,10 +20,7 @@ directory "/var/lib/nginx" do
   owner NGINX_USER
 end
 
-remote_file "#{SRC_DIR}/nginx-#{NGINX_VERSION}.tar.gz" do
-  source "http://nginx.org/download/nginx-#{NGINX_VERSION}.tar.gz"
-  mode "0644"
-end
+download_file "http://nginx.org/download/nginx-#{NGINX_VERSION}.tar.gz"
 
 execute "install nginx" do
   cwd SRC_DIR

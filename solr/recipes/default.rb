@@ -1,6 +1,6 @@
 include_recipe "java"
 
-INSTALL_DIR = "/opt"
+INSTALL_DIR = node.source.install_dir
 SOLR_USER = "solr"
 SOLR_VERSION = "3.6.0"
 
@@ -19,11 +19,7 @@ directory SRC_DIR do
   recursive true
 end
 
-remote_file "#{SRC_DIR}/#{SOLR_FILE}" do
-  source "http://mirror.netcologne.de/apache.org/lucene/solr/#{SOLR_VERSION}/#{SOLR_FILE}"
-  mode "0644"
-  checksum "3acac4323ba3dbfa153d8ef01f156bab9b0eccf1b1f1f03e91b8b6739d3dc6c6"
-end
+download_file "http://mirror.netcologne.de/apache.org/lucene/solr/#{SOLR_VERSION}/#{SOLR_FILE}"
 
 execute "install solr" do
   cwd INSTALL_DIR

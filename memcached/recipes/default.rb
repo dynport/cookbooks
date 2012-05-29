@@ -1,6 +1,4 @@
-# http://memcached.googlecode.com/files/memcached-1.4.13.tar.gz
-
-INSTALL_DIR = "/opt"
+INSTALL_DIR = node.source.install_dir
 SRC_DIR = "#{INSTALL_DIR}/src"
 MEMCACHED_VERSION = node.memcached.version
 MEMCACHED_USER = node.memcached.user
@@ -19,11 +17,7 @@ directory SRC_DIR do
   recursive true
 end
 
-remote_file "#{SRC_DIR}/memcached-#{MEMCACHED_VERSION}.tar.gz" do
-  source "http://memcached.googlecode.com/files/memcached-#{MEMCACHED_VERSION}.tar.gz"
-  mode "0644"
-  checksum node.memcached.checksum
-end
+download_file "#{SRC_DIR}/memcached-#{MEMCACHED_VERSION}.tar.gz"
 
 execute "install memcached" do
   cwd SRC_DIR

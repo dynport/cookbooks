@@ -1,11 +1,14 @@
-include_recipe "source"
 include_recipe "node"
 
 package "git-core"
 
 VERSION = node.statsd.version
 
-DIR = "/opt/statsd-#{VERSION}"
+DST = node.source.install_dir
+
+VERSION_DIR = "#{DST}/statsd-#{VERSION}"
+DIR = "#{DST}/statsd"
+
 PATH = "#{src_dir}/node-v#{VERSION}.tgz"
 
 
@@ -14,16 +17,16 @@ remote_file PATH do
 end
 
 execute "unpack node" do
-  command "tar xvfz #{PATH} && mv etsy-statsd-11049a2/ #{DIR}"
+  command "tar xvfz #{PATH} && mv etsy-statsd-11049a2/ #{VERSION_DIR}"
   cwd "/tmp"
-  creates "#{DIR}/stats.js"
+  creates "#{VERSION_DIR}/stats.js"
 end
 
-link "/opt/statsd" do
-  to "#{DIR}"
+link DIR do
+  to "#{VERSION_DIR}"
 end
 
-template "#{DIR}/statsdConfig.js" do
+template "#{VERSION_DIR}/statsdConfig.js" do
   variables(
     :graphite_port => node.statsd.graphite_port,
     :graphite_host => node.statsd.graphite_host,
@@ -39,6 +42,6 @@ user "statsd"
 
 start_stop_script(
   :name => "statsd", 
-  :pidfile => "/tmp/statsd.pid", :daemon => "/opt/node/bin/node", :daemon_args => "stats.js statsdConfig.js", :cwd => "/opt/statsd",
+  :pidfile => "/tmp/statsd.pid", :daemon => "#{DIR}/bin/node", :daemon_args => "stats.js statsdConfig.js", :cwd => DIR,
   :user => "statsd", :syslog_flag => "statsd", :create_pidfile => true
 )
