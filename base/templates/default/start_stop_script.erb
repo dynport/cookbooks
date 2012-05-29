@@ -7,13 +7,13 @@ DAEMON=<%= @daemon %>
 PIDFILE=<%= @pidfile %>
 SCRIPTNAME=/etc/init.d/$NAME
 <% (@env || {}).each do |k, v| %>
-<%= k %>=<%= v %>
+<%= k %>="<%= v %>"
 <% end %>
-DAEMON_ARGS=<%= @daemon_args %>
-<% if @syslog_flag %>
-LOGGING="| logger -t <%= @syslog_flag %>"
+
+<% if @daemon_args %>
+DAEMON_ARGS="<%= @daemon_args %>"
 <% else %>
-LOGGING=""
+DAEMON_ARGS=""
 <% end %>
 
 START_STOP_ARGS="-d $CWD --start --quiet --pidfile $PIDFILE --chuid $USER --exec $DAEMON"
@@ -38,9 +38,9 @@ do_start()
   #   0 if daemon has been started
   #   1 if daemon was already running
   #   2 if daemon could not be started
-  start-stop-daemon $START_STOP_ARGS --test > /dev/null \
+  <%= "#{@start_stop_env} " if @start_stop_env %>start-stop-daemon $START_STOP_ARGS --test > /dev/null \
     || return 1
-  start-stop-daemon $START_STOP_ARGS -- $DAEMON_ARGS <%= " 2>&1 | logger -t #{@syslog_flag}" if @syslog_flag %> &
+  <%= "#{@start_stop_env} " if @start_stop_env %>start-stop-daemon $START_STOP_ARGS -- $DAEMON_ARGS <%= " 2>&1 | logger -t #{@syslog_flag}" if @syslog_flag %> &
   # Add code here, if necessary, that waits for the process to be ready
   # to handle requests from services started subsequently which depend
   # on this one.  As a last resort, sleep for some time.
