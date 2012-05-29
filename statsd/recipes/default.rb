@@ -19,6 +19,10 @@ execute "unpack node" do
   creates "#{DIR}/stats.js"
 end
 
+link "/opt/statsd" do
+  to "#{DIR}"
+end
+
 template "#{DIR}/statsdConfig.js" do
   variables(
     :graphite_port => node.statsd.graphite_port,
@@ -28,4 +32,13 @@ template "#{DIR}/statsdConfig.js" do
     :mgmt_address => node.statsd[:mgmt_address],
     :mgmt_port => node.statsd[:mgmt_port]
   )
+  mode "0644"
 end
+
+user "statsd"
+
+start_stop_script(
+  :name => "statsd", 
+  :pidfile => "/tmp/statsd.pid", :daemon => "/opt/node/bin/node", :daemon_args => "stats.js statsdConfig.js", :cwd => "/opt/statsd",
+  :user => "statsd", :syslog_flag => "statsd", :create_pidfile => true
+)
