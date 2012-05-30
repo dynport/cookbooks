@@ -17,7 +17,7 @@ directory SRC_DIR do
   recursive true
 end
 
-download_file "#{SRC_DIR}/memcached-#{MEMCACHED_VERSION}.tar.gz"
+download_file "http://memcached.googlecode.com/files/memcached-#{MEMCACHED_VERSION}.tar.gz"
 
 execute "install memcached" do
   cwd SRC_DIR
