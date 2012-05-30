@@ -71,6 +71,7 @@ end
 
 template "#{GRAPHITE_DIR}/conf/carbon.conf" do
   mode "644"
+  variables(:address => node.graphite.carbon_address)
 end
 
 template "#{GRAPHITE_DIR}/conf/storage-aggregation.conf" do
