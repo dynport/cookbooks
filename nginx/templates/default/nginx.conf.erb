@@ -32,7 +32,7 @@ http {
     gzip  on;
 
     server {
-        listen       80;
+        listen       <%= node.nginx.address %>:<%= node.nginx.port %>;
         server_name  _;
 
         #charset koi8-r;
