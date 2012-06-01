@@ -90,6 +90,6 @@ execute "chown /opt/graphite" do
   command "chown -R #{USER}:#{USER} #{GRAPHITE_DIR}"
 end
 
-nginx_unix_proxy(:name => "graphite", :socket_path => "/tmp/graphite.socket", :root => DJANGO_ROOT, 
-  :location => "/", :server_name => node.graphite.server_name, :interface => node.graphite.nginx_interface, :port => node.graphite.nginx_port
+nginx_unix_proxy(:name => "graphite", :upstream_server => "unix:/tmp/graphite.socket", :root => DJANGO_ROOT, 
+  :location => "/", :server_name => node.graphite.server_name, :listen => "#{node.nginx.address}:#{node.nginx.port}"
 )

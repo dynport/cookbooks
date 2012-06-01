@@ -1,9 +1,11 @@
 upstream <%= @name %>_server {
-    server unix:<%= @socket_path %>;
+  server <%= @upstream_server %>;
 }
 
 server {
-  listen <%= [@interface, @port].compact.join(":") %>;
+  <% if @listen %>
+  listen <%= @listen %>;
+  <% end %>
   client_max_body_size 4G;
   server_name <%= @server_name %> ;
 

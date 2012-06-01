@@ -1,28 +1,25 @@
 include_recipe "java"
 
-INSTALL_DIR = "/opt"
+INSTALL_DIR = node.source.install_dir
 JENKINS_USER = node.jenkins.user
+JENKINS_USER_HOME = "/home/#{JENKINS_USER}"
+
 JENKINS_DIR = "#{INSTALL_DIR}/jenkins-#{node.jenkins.version}"
 SRC_DIR = "#{INSTALL_DIR}/src"
-
+JENKINS_HOME = "#{JENKINS_USER_HOME}/.jenkins"
 
 user JENKINS_USER do
   action :create
   shell "/bin/bash"
 end
 
-directory "/home/#{JENKINS_USER}" do
+directory JENKINS_HOME do
   mode "755"
   owner JENKINS_USER
 end
 
 directory SRC_DIR do
   action :create
-  recursive true
-end
-
-directory "#{INSTALL_DIR}/jenkins/lib" do
-  owner JENKINS_USER
   recursive true
 end
 
@@ -46,14 +43,20 @@ template "/etc/init.d/jenkins" do
   mode "0744"
 end
 
-# directory "/home/#{JENKINS_USER}/jenkins/plugins" do
-#   owner JENKINS_USER
-#   mode "755"
-# end
+directory "#{JENKINS_HOME}/plugins" do
+  owner JENKINS_USER
+  mode "755"
+  recursive true
+end
 
-# node.jenkins.plugins.each do |plugin|
-#   remote_file "/home/#{JENKINS_USER}/jenkins/plugins"
-# end
+node.jenkins.plugins.each do |plugin|
+  remote_file "#{JENKINS_HOME}/plugins/#{plugin}.hpi" do
+    source "http://updates.jenkins-ci.org/latest/#{plugin}.hpi"
+    owner JENKINS_USER
+  end
+end
 
-# http://updates.jenkins-ci.org/latest/chucknorris.hpi
-# chucknorris greenballs github git envinject karotz
+nginx_unix_proxy(
+  :name => "jenkins", :upstream_server => "#{node.jenkins.address}:#{node.jenkins.port}", :root => "#{JENKINS_HOME}/war", 
+  :location => "/", :server_name => "jenkins.vagrant.xx", :listen => "#{node.nginx.address}:80"
+)

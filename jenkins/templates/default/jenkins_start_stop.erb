@@ -11,8 +11,6 @@ JENKINS_OPTS="$JENKINS_OPTS --prefix=<%= node.jenkins[:prefix] %>"
 
 START_PREFIX="start-stop-daemon -c $USER -m --pidfile $PIDFILE --start --chdir /home/jenkins --exec /usr/bin/java -- "
 
-JENKINS_HOME="/home/<%= node.jenkins.user %>/jenkins"
-
 set -e
 
 # Parse command line parameters.
