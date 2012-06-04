@@ -24,8 +24,12 @@ directory SRC_DIR do
 end
 
 JENKINS_FILE = "jenkins-#{node.jenkins.version}.war"
-
 JENKINS_PATH = "#{INSTALL_DIR}/jenkins/lib/#{JENKINS_FILE}"
+JENKINS_JAR_DIR = "#{INSTALL_DIR}/jenkins/lib"
+
+directory JENKINS_JAR_DIR do
+  recursive true
+end
 
 remote_file JENKINS_PATH do
   source "http://mirrors.jenkins-ci.org/war/#{node.jenkins.version}/jenkins.war"
@@ -34,7 +38,7 @@ remote_file JENKINS_PATH do
   not_if "test -e #{JENKINS_PATH}"
 end
 
-link "#{INSTALL_DIR}/jenkins/lib/jenkins.war" do
+link "#{JENKINS_JAR_DIR}/jenkins.war" do
   to JENKINS_PATH
 end
 
@@ -58,17 +62,8 @@ end
 
 SERVER_NAME = "jenkins.vagrant.xx"
 
-
 upstream_server = NginxConfigRenderer.upstream_server("jenkins_server", "#{node.jenkins.address}:#{node.jenkins.port}")
 location = NginxConfigRenderer.proxied_location("/", "jenkins_server")
 server = NginxConfigRenderer.server("#{node.nginx.address}:80", SERVER_NAME, "#{JENKINS_HOME}/war", [location])
 
-file "/opt/nginx/conf/sites-enabled/jenkins" do
-  mode "0644"
-  content [upstream_server, server].join("\n")
-end
-
-execute "create jenkins script" do
-  command "echo 'hello world'"
-  not_if %(curl -I "#{SERVER_NAME}/job/wimdu/api/json" | head -n 1| grep " 200 ")
-end
+create_nginx_upstream_proxy(:jenkins, [upstream_server, server].join("\n"))

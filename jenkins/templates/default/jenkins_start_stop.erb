@@ -9,7 +9,7 @@ JENKINS_OPTS="--httpPort=<%= node.jenkins.port %> --httpListenAddress=<%= node.j
 JENKINS_OPTS="$JENKINS_OPTS --prefix=<%= node.jenkins[:prefix] %>"
 <% end %>
 
-START_PREFIX="start-stop-daemon -c $USER -m --pidfile $PIDFILE --start --chdir /home/jenkins --exec /usr/bin/java -- "
+START_PREFIX="start-stop-daemon -c $USER -m --pidfile $PIDFILE --start --chdir /home/$USER --exec /usr/bin/java -- "
 
 set -e
 
