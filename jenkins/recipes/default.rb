@@ -56,7 +56,19 @@ node.jenkins.plugins.each do |plugin|
   end
 end
 
-nginx_unix_proxy(
-  :name => "jenkins", :upstream_server => "#{node.jenkins.address}:#{node.jenkins.port}", :root => "#{JENKINS_HOME}/war", 
-  :location => "/", :server_name => "jenkins.vagrant.xx", :listen => "#{node.nginx.address}:80"
-)
+SERVER_NAME = "jenkins.vagrant.xx"
+
+
+upstream_server = NginxConfigRenderer.upstream_server("jenkins_server", "#{node.jenkins.address}:#{node.jenkins.port}")
+location = NginxConfigRenderer.proxied_location("/", "jenkins_server")
+server = NginxConfigRenderer.server("#{node.nginx.address}:80", SERVER_NAME, "#{JENKINS_HOME}/war", [location])
+
+file "/opt/nginx/conf/sites-enabled/jenkins" do
+  mode "0644"
+  content [upstream_server, server].join("\n")
+end
+
+execute "create jenkins script" do
+  command "echo 'hello world'"
+  not_if %(curl -I "#{SERVER_NAME}/job/wimdu/api/json" | head -n 1| grep " 200 ")
+end
