@@ -61,6 +61,17 @@ def nginx_user
   node.www_user
 end
 
+def create_nginx_upstream_proxy(name, nginx_content)
+  directory "/opt/nginx/conf/sites-enabled" do
+    recursive true
+  end
+
+  file "/opt/nginx/conf/sites-enabled/#{name}" do
+    mode "0644"
+    content nginx_content
+  end
+end
+
 def nginx_unix_proxy(attributes)
   directory "#{nginx_home}/conf/sites-enabled" do
     owner nginx_user
