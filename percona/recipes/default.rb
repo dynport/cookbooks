@@ -10,6 +10,12 @@ end
 
 template "/etc/apt/sources.list.d/percona.list"
 
+directory "/etc/apt/preferences.d" do
+  recursive true
+end
+
+cookbook_file "/etc/apt/preferences.d/percona"
+
 execute "update apt" do
   command "apt-get update"
   subscribes :run, resources(:template => "/etc/apt/sources.list.d/percona.list"), :immediately
