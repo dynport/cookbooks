@@ -59,9 +59,3 @@ node.jenkins.plugins.each do |plugin|
     owner JENKINS_USER
   end
 end
-
-upstream_server = NginxConfigRenderer.upstream_server("jenkins_server", "#{node.jenkins.address}:#{node.jenkins.port}")
-location = NginxConfigRenderer.proxied_location("/", "jenkins_server")
-server = NginxConfigRenderer.server("#{node.nginx.address}:80", node.jenkins.server_name, "#{JENKINS_HOME}/war", [location])
-
-create_nginx_upstream_proxy(:jenkins, [upstream_server, server].join("\n"))
