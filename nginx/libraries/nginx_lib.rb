@@ -5,6 +5,12 @@ server {
   <% if listen %>
   listen <%= listen %>;
   <% end %>
+
+  <% if htaccess_file %>
+  auth_basic "Restricted files";
+  auth_basic_user_file "<%= htaccess_file %>";
+  <% end %>
+
   client_max_body_size 4G;
   server_name <%= server_name %> ;
 
@@ -47,8 +53,10 @@ class NginxConfigRenderer < TemplateRenderer
       render_template_with_attributes(PROXY_LOCATION_TEMPLATE, :location => location, :upstream_server => upstream_server)
     end
 
-    def server(listen, server_name, root, locations)
-      render_template_with_attributes(SERVER_TEMPLATE, :server_name => server_name, :listen => listen, :locations => locations, :root => root)
+    def server(listen, server_name, root, locations, htaccess_file = nil)
+      render_template_with_attributes(SERVER_TEMPLATE, :server_name => server_name, :listen => listen, :locations => locations, :root => root, 
+        :htaccess_file => htaccess_file
+      ) 
     end
   end
 end
