@@ -24,7 +24,7 @@ download_file "http://nginx.org/download/nginx-#{NGINX_VERSION}.tar.gz"
 
 execute "install nginx" do
   cwd SRC_DIR
-  command "tar xvfz nginx-#{NGINX_VERSION}.tar.gz && cd nginx-#{NGINX_VERSION} && ./configure --prefix=#{INSTALL_DIR}/nginx-#{NGINX_VERSION} && make && make install"
+  command "tar xvfz nginx-#{NGINX_VERSION}.tar.gz && cd nginx-#{NGINX_VERSION} && ./configure --prefix=#{INSTALL_DIR}/nginx-#{NGINX_VERSION} --with-http_ssl_module && make && make install"
   creates "#{INSTALL_DIR}/nginx-#{NGINX_VERSION}/sbin/nginx"
 end
 
