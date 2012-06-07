@@ -37,6 +37,12 @@ template "/etc/init.d/nginx" do
   mode "0755"
 end
 
+directory "#{INSTALL_DIR}/nginx-#{NGINX_VERSION}/conf/sites-enabled" do
+  recursive true
+  owner NGINX_USER
+  mode "0755"
+end
+
 link node.nginx.dir do
   to "#{INSTALL_DIR}/nginx-#{NGINX_VERSION}"
 end
