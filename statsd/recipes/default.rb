@@ -1,16 +1,11 @@
 include_recipe "node"
-
 package "git-core"
 
 VERSION = node.statsd.version
-
 DST = node.source.install_dir
-
 VERSION_DIR = "#{DST}/statsd-#{VERSION}"
 DIR = "#{DST}/statsd"
-
 PATH = "#{src_dir}/node-v#{VERSION}.tgz"
-
 
 remote_file PATH do
   source "https://github.com/etsy/statsd/tarball/v#{VERSION}"
@@ -42,6 +37,6 @@ user "statsd"
 
 start_stop_script(
   :name => "statsd", 
-  :pidfile => "/tmp/statsd.pid", :daemon => "#{DIR}/bin/node", :daemon_args => "stats.js statsdConfig.js", :cwd => DIR,
+  :pidfile => "/tmp/statsd.pid", :daemon => "/opt/node/bin/node", :daemon_args => "stats.js statsdConfig.js", :cwd => DIR,
   :user => "statsd", :syslog_flag => "statsd", :create_pidfile => true
 )
