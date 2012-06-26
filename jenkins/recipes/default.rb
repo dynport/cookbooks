@@ -16,6 +16,7 @@ end
 directory JENKINS_HOME do
   mode "755"
   owner JENKINS_USER
+  recursive true
 end
 
 directory SRC_DIR do
