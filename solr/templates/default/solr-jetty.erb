@@ -1,4 +1,15 @@
 #!/bin/bash
+### BEGIN INIT INFO
+# Provides:          <%= ["solr", @role].compact.join("_") %>
+# Required-Start:    $remote_fs $network $syslog
+# Required-Stop:     $remote_fs $network $syslog
+# Should-Start:
+# Should-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Solr
+# Description:       Solr
+### END INIT INFO
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 USER=solr

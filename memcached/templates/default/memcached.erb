@@ -1,4 +1,16 @@
 #! /bin/sh
+### BEGIN INIT INFO
+# Provides:          memcached
+# Required-Start:    $remote_fs $network $syslog
+# Required-Stop:     $remote_fs $network $syslog
+# Should-Start:
+# Should-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Memcached
+# Description:       Memcached
+### END INIT INFO
+#
 PATH=/opt/memcached/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=/opt/memcached/bin/memcached
 DAEMONBOOTSTRAP=/opt/memcached/bin/start-memcached
