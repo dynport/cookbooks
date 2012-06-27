@@ -1,1 +1,0 @@
-default[:collectd][:hostname] = "localhost"
