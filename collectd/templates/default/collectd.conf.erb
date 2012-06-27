@@ -10,10 +10,14 @@ LoadPlugin swap
   ReportByDevice false
 </Plugin>
 
+<% if @processes %>
 LoadPlugin processes
 <Plugin processes>
-  Process "name"
+  <% @processes.each do |process_name| %>
+  Process <%= process_name.to_s.inspect %>
+  <% end %>
 </Plugin>
+<% end %>
 
 LoadPlugin rrdtool
 <Plugin rrdtool>

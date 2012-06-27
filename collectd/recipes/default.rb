@@ -66,6 +66,7 @@ template "/etc/collectd.conf" do
     "redis" => node.collectd[:redis],
     "memcached" => node.collectd[:memcached],
     "graphite" => node.collectd[:graphite],
-    "mount_points" => node.collectd[:mount_points]
+    "mount_points" => node.collectd[:mount_points],
+    "processes" => node.collectd[:processes]
   )
 end
