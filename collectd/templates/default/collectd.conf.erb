@@ -42,9 +42,13 @@ LoadPlugin memcached
 <% if @redis %>
 LoadPlugin redis
 <Plugin redis>
-  Host <%= @redis.fetch("address").to_s.inspect %>
-  Port <%= @redis.fetch("port").to_s.inspect %>
-  Timeout 2000
+  <% @redis.each do |node, config| %>
+    <Node <%= node %>>
+      Host <%= config.fetch("address").to_s.inspect %>
+      Port <%= config.fetch("port").to_s.inspect %>
+      Timeout 2000
+    </Node>
+  <% end %>
 </Plugin>
 <% end %>
 
