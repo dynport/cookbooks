@@ -35,33 +35,33 @@ LoadPlugin df
 </Plugin>
 <% end %>
 
-<% if @memcached %>
+<% if @memcached_address && @memcached_port %>
 LoadPlugin memcached
 <Plugin memcached>
-  Host <%= @memcached.fetch("address").to_s.inspect %>
-  Port <%= @memcached.fetch("port").to_s.inspect %>
+  Host <%= @memcached_address.to_s.inspect %>
+  Port <%= @memcached_port.to_s.inspect %>
 </Plugin>
 <% end %>
 
-<% if @redis %>
+<% if @redis_nodes %>
 LoadPlugin redis
 <Plugin redis>
-  <% @redis.each do |node, config| %>
-    <Node <%= node %>>
-      Host <%= config.fetch("address").to_s.inspect %>
-      Port <%= config.fetch("port").to_s.inspect %>
-      Timeout 2000
-    </Node>
-  <% end %>
+<% @redis_nodes.each do |node_name, config| %>
+  <Node <%= node_name %>>
+    Host <%= config.fetch("address").to_s.inspect %>
+    Port <%= config.fetch("port").to_s.inspect %>
+    Timeout 2000
+  </Node>
 </Plugin>
 <% end %>
+<% end %>
 
-<% if @graphite %>
+<% if @graphite_address && @graphite_port %>
 LoadPlugin write_graphite
 <Plugin write_graphite>
   <Carbon>
-    Host <%= @graphite.fetch("address").to_s.inspect %>
-    Port <%= @graphite.fetch("port").to_s.inspect %>
+    Host <%= @graphite_address.to_s.inspect %>
+    Port <%= @graphite_port.to_s.inspect %>
     Prefix "collectd."
     Postfix ""
     StoreRates false

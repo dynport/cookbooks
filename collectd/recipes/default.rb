@@ -63,9 +63,11 @@ end
 template "/etc/collectd.conf" do
   source "collectd.conf.erb"
   variables(
-    "redis" => node.collectd[:redis],
-    "memcached" => node.collectd[:memcached],
-    "graphite" => node.collectd[:graphite],
+    "redis_nodes" => node.collectd[:redis_nodes],
+    "memcached_address" => node.collectd[:memcached_address],
+    "memcached_port" => node.collectd[:memcached_port],
+    "graphite_address" => node.collectd[:graphite_address],
+    "graphite_port" => node.collectd[:graphite_port],
     "mount_points" => node.collectd[:mount_points],
     "processes" => node.collectd[:processes]
   )
