@@ -49,6 +49,7 @@ template "/etc/init.d/solr_slave" do
   variables(
     :solr_home => "#{SOLR_DATA_DIR}/slave",
     :solr_port => node.solr.slave_port,
+    :solr_host => node.solr[:host],
     :role => "slave",
     :master_slave_options => "-Denable.slave=true -Dmaster.url=#{node.solr.master_url}"
   )
