@@ -20,13 +20,10 @@ JAVA_NEW_SIZE="<%= node.solr.java_new_size %>"
 JAVA_SURVIVOR_RATIO="<%= node.solr.java_survivor_ratio %>"
 
 # Garbage collections - use concurrent low pause collectors
-JAVA_OPTS="-XX:+UseConcMarkSweepGC -XX:+UseParNewGC"
+JAVA_OPTS="-XX:+UseParallelGC"
 
 # Memory settings: Heap size
 JAVA_OPTS="$JAVA_OPTS -Xmx$JAVA_HEAP_SIZE -Xms$JAVA_HEAP_SIZE"
-
-# Memory settings: Young generation
-JAVA_OPTS="$JAVA_OPTS -XX:NewSize=$JAVA_NEW_SIZE -XX:SurvivorRatio=$JAVA_SURVIVOR_RATIO"
 
 # enable or disable newrelic agent
 # NEWRELIC_OPTS="-javaagent:/home/solr/tomcat/newrelic/newrelic.jar"
