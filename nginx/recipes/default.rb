@@ -3,6 +3,8 @@ SRC_DIR = "#{INSTALL_DIR}/src"
 NGINX_VERSION = node.nginx.version
 NGINX_USER = node.www_user
 
+package "unzip"
+
 %w(libpcre3 libpcre3-dev libpcrecpp0 zlib1g-dev libssl-dev libgd2-xpm-dev).each { |pkg| package pkg }
 
 user NGINX_USER do
@@ -29,6 +31,10 @@ directory PATCH_PATH do
   recursive true
 end
 
+remote_file "#{SRC_DIR}/headers-more-nginx-module-v0.17rc1.zip" do
+  source "https://github.com/agentzh/headers-more-nginx-module/zipball/v0.17rc1"
+end
+
 cookbook_file PATCH_FILE
 cookbook_file "#{PATCH_PATH}/config" do
   source "syslog_patch_config"
@@ -37,14 +43,19 @@ end
 execute "install nginx" do
   cwd SRC_DIR
   command "
+    unzip headers-more-nginx-module-v0.17rc1.zip
     tar xvfz nginx-#{NGINX_VERSION}.tar.gz 
     cd nginx-#{NGINX_VERSION}
     patch -p1 < #{PATCH_FILE}
-    ./configure --prefix=#{INSTALL_DIR}/nginx-#{NGINX_VERSION} --with-http_ssl_module --add-module=#{PATCH_PATH}
+    ./configure --prefix=#{INSTALL_DIR}/nginx-#{NGINX_VERSION} --with-http_ssl_module --add-module=#{PATCH_PATH} --with-http_gzip_static_module --with-http_stub_status_module --add-module=/opt/src/agentzh-headers-more-nginx-module-3580526/
     make 
     make install
   "
   creates "#{INSTALL_DIR}/nginx-#{NGINX_VERSION}/sbin/nginx"
+end
+
+directory "/var/log/nginx" do
+  recursive true
 end
 
 template "#{INSTALL_DIR}/nginx-#{NGINX_VERSION}/conf/nginx.conf" do
