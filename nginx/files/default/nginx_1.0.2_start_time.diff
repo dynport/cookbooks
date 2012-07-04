@@ -1,0 +1,52 @@
+--- src/http/ngx_http_variables.c.orig	2011-05-11 10:44:09.000000000 -0400
++++ src/http/ngx_http_variables.c	2011-05-11 10:47:25.000000000 -0400
+@@ -93,6 +93,9 @@
+ static ngx_int_t ngx_http_variable_pid(ngx_http_request_t *r,
+     ngx_http_variable_value_t *v, uintptr_t data);
+
++static ngx_int_t ngx_http_variable_start_time(ngx_http_request_t *r,
++    ngx_http_variable_value_t *v, uintptr_t data);
++
+ /*
+  * TODO:
+  *     Apache CGI: AUTH_TYPE, PATH_INFO (null), PATH_TRANSLATED
+@@ -254,6 +257,9 @@
+     { ngx_string("pid"), NULL, ngx_http_variable_pid,
+       0, 0, 0 },
+
++    { ngx_string("start_time"), NULL, ngx_http_variable_start_time,
++      0, 0, 0 },
++
+     { ngx_null_string, NULL, NULL, 0, 0, 0 }
+ };
+
+@@ -1660,6 +1666,29 @@
+ }
+
+
++static ngx_int_t
++ngx_http_variable_start_time(ngx_http_request_t *r,
++    ngx_http_variable_value_t *v, uintptr_t data)
++{
++    u_char  *p;
++
++    p = ngx_pnalloc(r->pool, NGX_INT64_LEN);
++    if (p == NULL) {
++        return NGX_ERROR;
++    }
++
++    uint64_t usec = (((uint64_t)r->start_sec * 1000 * 1000) + ((uint64_t)r->start_msec * 1000));
++
++    v->len = ngx_sprintf(p, "%L", usec) - p;
++    v->valid = 1;
++    v->no_cacheable = 0;
++    v->not_found = 0;
++    v->data = p;
++
++    return NGX_OK;
++}
++
++
+ void *
+ ngx_http_map_find(ngx_http_request_t *r, ngx_http_map_t *map, ngx_uint_t key,
+     u_char *text, size_t len, ngx_str_t *match)

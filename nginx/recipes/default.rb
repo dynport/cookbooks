@@ -40,6 +40,15 @@ cookbook_file "#{PATCH_PATH}/config" do
   source "syslog_patch_config"
 end
 
+START_TIME_PATCH = "/opt/src/patches/nginx_1.0.2_start_time.diff"
+
+directory "/opt/src/patches" do
+  recursive true
+end
+
+cookbook_file "#{PATCH_PATH}/nginx_1.0.2_start_time.diff"
+cookbook_file START_TIME_PATCH
+
 execute "install nginx" do
   cwd SRC_DIR
   command "
@@ -47,6 +56,7 @@ execute "install nginx" do
     tar xvfz nginx-#{NGINX_VERSION}.tar.gz 
     cd nginx-#{NGINX_VERSION}
     patch -p1 < #{PATCH_FILE}
+    patch -p0 < #{START_TIME_PATCH}
     ./configure --prefix=#{INSTALL_DIR}/nginx-#{NGINX_VERSION} --with-http_ssl_module --add-module=#{PATCH_PATH} --with-http_gzip_static_module --with-http_stub_status_module --add-module=/opt/src/agentzh-headers-more-nginx-module-3580526/
     make 
     make install
