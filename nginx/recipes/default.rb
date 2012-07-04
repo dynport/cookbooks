@@ -22,17 +22,25 @@ end
 
 download_file "http://nginx.org/download/nginx-#{NGINX_VERSION}.tar.gz"
 
-PATH_PATH = "#{SRC_DIR}/syslog_1.2.0.patch"
+PATCH_PATH = "#{SRC_DIR}/syslog_1.2.0"
+PATCH_FILE = "#{PATCH_PATH}/syslog_1.2.0.patch"
 
-cookbook_file PATH_PATH
+directory PATCH_PATH do
+  recursive true
+end
+
+cookbook_file PATCH_FILE
+cookbook_file "#{PATCH_PATH}/config" do
+  source "syslog_patch_config"
+end
 
 execute "install nginx" do
   cwd SRC_DIR
   command "
     tar xvfz nginx-#{NGINX_VERSION}.tar.gz 
     cd nginx-#{NGINX_VERSION}
-    patch -p1 < #{PATH_PATH}
-    ./configure --prefix=#{INSTALL_DIR}/nginx-#{NGINX_VERSION} --with-http_ssl_module 
+    patch -p1 < #{PATCH_FILE}
+    ./configure --prefix=#{INSTALL_DIR}/nginx-#{NGINX_VERSION} --with-http_ssl_module --add-module=#{PATCH_PATH}
     make 
     make install
   "
