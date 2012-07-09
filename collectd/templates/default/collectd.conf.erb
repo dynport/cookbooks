@@ -77,12 +77,11 @@ LoadPlugin write_graphite
 #	NotificationExec "user:group" "/path/to/exec"
 #</Plugin>
 
-#<Plugin nginx>
-#	URL "http://localhost/status?auto"
-#	User "www-user"
-#	Password "secret"
-#	CACert "/etc/ssl/ca.crt"
-#</Plugin>
+<% if @nginx_url %>
+<Plugin nginx>
+	URL "<%= @nginx_url %>"
+</Plugin>
+<% end %>
 
 ##LoadPlugin dbi
 #<Plugin dbi>

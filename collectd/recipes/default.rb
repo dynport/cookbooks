@@ -69,6 +69,7 @@ template "/etc/collectd.conf" do
     "graphite_address" => node.collectd[:graphite_address],
     "graphite_port" => node.collectd[:graphite_port],
     "mount_points" => node.collectd[:mount_points],
-    "processes" => node.collectd[:processes]
+    "processes" => node.collectd[:processes],
+    "nginx_url" => node.collectd[:nginx_url]
   )
 end
