@@ -78,6 +78,7 @@ LoadPlugin write_graphite
 #</Plugin>
 
 <% if @nginx_url %>
+LoadPlugin nginx
 <Plugin nginx>
 	URL "<%= @nginx_url %>"
 </Plugin>
