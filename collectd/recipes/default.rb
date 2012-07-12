@@ -72,4 +72,10 @@ template "/etc/collectd.conf" do
     "processes" => node.collectd[:processes],
     "nginx_url" => node.collectd[:nginx_url]
   )
+  notifies :restart, "service[collectd]"
+end
+
+service "collectd" do
+  supports :restart => true, :status => true
+  action [ :enable, :start ]
 end
