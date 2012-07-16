@@ -72,10 +72,13 @@ template "/etc/collectd.conf" do
     "processes" => node.collectd[:processes],
     "nginx_url" => node.collectd[:nginx_url]
   )
-  notifies :restart, "service[collectd]"
+  notifies :run, 'execute[start_or_restart_collectd]'
+end
+
+execute "start_or_restart_collectd" do
+  command %(/etc/init.d/collectd status | grep running > /dev/null && /etc/init.d/collectd restart || /etc/init.d/collectd start)
 end
 
 service "collectd" do
-  supports :restart => true, :status => true
   action [ :enable, :start ]
 end
