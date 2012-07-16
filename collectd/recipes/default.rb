@@ -77,6 +77,7 @@ end
 
 execute "start_or_restart_collectd" do
   command %(/etc/init.d/collectd status | grep running > /dev/null && /etc/init.d/collectd restart || /etc/init.d/collectd start)
+  action :nothing
 end
 
 service "collectd" do
