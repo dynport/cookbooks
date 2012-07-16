@@ -34,7 +34,7 @@ end
 bash "install rvm" do
   user USER
   environment("rvm_path" => RVM_DIR, "HOME" => USER_HOME)
-  code %(bash #{SRC_DIR}/rvm-installer --version #{RVM_VERSION})
+  code %(bash #{SRC_DIR}/rvm-installer --version #{RVM_VERSION}; exit 0)
   creates "#{RVM_DIR}/scripts/rvm"
 end
 
