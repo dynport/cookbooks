@@ -19,13 +19,6 @@ LoadPlugin processes
 </Plugin>
 <% end %>
 
-LoadPlugin rrdtool
-<Plugin rrdtool>
-  DataDir "/opt/collectd/var/lib/collectd/rrd"
-  CacheTimeout 120
-  CacheFlush   900
-</Plugin>
-
 <% if @mount_points %>
 LoadPlugin df
 <Plugin df>
