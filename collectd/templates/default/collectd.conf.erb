@@ -77,6 +77,19 @@ LoadPlugin nginx
 </Plugin>
 <% end %>
 
+<% if node.collectd[:mysql_slave] %>
+LoadPlugin mysql
+<Plugin "mysql">
+  <Database "information_schema">
+    Host "localhost"
+    User "root"
+    Port 3306
+    SlaveStats true
+    SlaveNotifications true
+  </Database>
+</Plugin>
+<% end %>
+
 ##LoadPlugin dbi
 #<Plugin dbi>
 #	<Query "num_of_customers">
