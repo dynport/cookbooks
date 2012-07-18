@@ -77,15 +77,38 @@ LoadPlugin nginx
 </Plugin>
 <% end %>
 
-<% if node.collectd[:mysql_slave] %>
+<% if node.collectd[:mysql] %>
 LoadPlugin mysql
 <Plugin "mysql">
   <Database "information_schema">
     Host "localhost"
     User "root"
     Port 3306
+    <% if node.collectd[:mysql_slave] %>
     SlaveStats true
     SlaveNotifications true
+    <% end %>
+  </Database>
+</Plugin>
+<% end %>
+
+<% if node.collectd[:mysql_slave] %>
+LoadPlugin dbi
+<Plugin dbi>
+  <Query "seconds_behind_master">
+    Statement "SHOW SLAVE STATUS"
+    <Result>
+      Type "gauge"
+      InstancePrefix "seconds_behind_master"
+      ValuesFrom "Seconds_Behind_Master"
+    </Result>
+  </Query>
+  <Database "customers_db">
+    Driver "mysql"
+    DriverOption "host" "localhost"
+    DriverOption "username" "collectd"
+    DriverOption "dbname" "information_schema"
+    Query "seconds_behind_master"
   </Database>
 </Plugin>
 <% end %>

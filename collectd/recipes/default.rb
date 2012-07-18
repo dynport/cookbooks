@@ -8,7 +8,7 @@ COLLECTD_PREFIX = "collectd-5.1.0"
 COLLECTD_FILE = "#{COLLECTD_PREFIX}.tar.gz"
 COLLECTD_DIR = "/opt/#{COLLECTD_PREFIX}"
 
-%w(python-dev libperl-dev libyajl-dev yajl-tools libcurl4-openssl-dev libdbi0-dev).each do |name|
+%w(python-dev libperl-dev librrd-dev libdbd-mysql libyajl-dev yajl-tools libcurl4-openssl-dev libdbi0-dev).each do |name|
   package name
 end
 
