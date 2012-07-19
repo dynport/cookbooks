@@ -49,12 +49,12 @@ LoadPlugin redis
 <% end %>
 <% end %>
 
-<% if @graphite_address && @graphite_port %>
+<% if node.collectd[:graphite_address] && node.collectd[:graphite_port] %>
 LoadPlugin write_graphite
 <Plugin write_graphite>
   <Carbon>
-    Host <%= @graphite_address.to_s.inspect %>
-    Port <%= @graphite_port.to_s.inspect %>
+    Host <%= node.collectd[:graphite_address].to_s.inspect %>
+    Port <%= node.collectd[:graphite_port].to_s.inspect %>
     Prefix "collectd."
     Postfix ""
     StoreRates false
