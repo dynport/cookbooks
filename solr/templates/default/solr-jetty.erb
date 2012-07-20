@@ -32,7 +32,11 @@ JAVA_OPTS="$JAVA_OPTS -Xmx$JAVA_HEAP_SIZE -Xms$JAVA_HEAP_SIZE"
 START_PREFIX="start-stop-daemon -c $USER -m --pidfile $PIDFILE --start --chdir /opt/apache-solr/example --exec /usr/bin/java -- $JAVA_OPTS"
 
 SOLR_HOME="<%= @solr_home %>"
-SOLR_PORT="<%= @solr_port %>"
+if [[ "$PREFILL" ]]; then
+  SOLR_PORT="<%= @solr_port.to_i + 1000 %>"
+else
+  SOLR_PORT="<%= @solr_port %>"
+fi
 SOLR_OPTS="-Dsolr.solr.home=$SOLR_HOME -Djetty.port=$SOLR_PORT"
 <% if @solr_host %>
 SOLR_OPTS="$SOLR_OPTS -Djetty.host=<%= @solr_host %>"
