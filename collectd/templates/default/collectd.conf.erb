@@ -70,6 +70,14 @@ LoadPlugin write_graphite
 </Plugin>
 <% end %>
 
+<% if node.collectd[:use_rrd] %>
+<Plugin "rrdtool">
+  DataDir "/opt/collectd/rrd"
+  CacheFlush 120
+  WritesPerSecond 50
+</Plugin>
+<% end %>
+
 #LoadPlugin exec
 #<Plugin exec>
 #	Exec "user:group" "/path/to/exec"
