@@ -1,11 +1,11 @@
 Hostname    "<%= `hostname`.strip %>"
 
 LoadPlugin syslog
+<% if log_level = node.collectd[:log_level] %>
 <Plugin "syslog">
-  <% if log_level = node.collectd[:log_level] %>
   LogLevel "<%= log_level %>"
-  <% end %>
 </Plugin>
+<% end %>
 
 LoadPlugin cpu
 LoadPlugin interface
