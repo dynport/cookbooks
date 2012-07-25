@@ -43,7 +43,7 @@ execute "install collected" do
   command <<-CMD
     tar xvfz #{COLLECTD_FILE}
     cd #{COLLECTD_PREFIX}
-    ./configure --prefix=#{COLLECTD_DIR} --with-libcredis=/opt/credis
+    ./configure --prefix=#{COLLECTD_DIR} --with-libcredis=/opt/credis --enable-debug
     make
     make install
   CMD
