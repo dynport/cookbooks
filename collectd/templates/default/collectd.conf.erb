@@ -71,6 +71,7 @@ LoadPlugin write_graphite
 <% end %>
 
 <% if node.collectd[:use_rrd] %>
+LoadPlugin rrdtool
 <Plugin "rrdtool">
   DataDir "/opt/collectd/rrd"
   CacheFlush 120
