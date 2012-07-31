@@ -68,9 +68,7 @@ directory "/var/log/nginx" do
   recursive true
 end
 
-template "#{INSTALL_DIR}/nginx-#{NGINX_VERSION}/conf/nginx.conf" do
-  source "nginx.conf.erb"
-end
+template "#{INSTALL_DIR}/nginx-#{NGINX_VERSION}/conf/nginx.conf"
 
 template "/etc/init.d/nginx" do
   source "nginx.init.erb"

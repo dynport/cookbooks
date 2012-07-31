@@ -1,58 +1,65 @@
 user  <%= node.www_user %>;
 worker_processes  <%= node.nginx.processes %>;
+pid /var/run/nginx.pid;
 
-#error_log  logs/error.log;
-#error_log  logs/error.log  notice;
-#error_log  logs/error.log  info;
-
-pid        /var/run/nginx.pid;
-
+syslog user nginx;
 
 events {
-    worker_connections  1024;
+  worker_connections 768;
+  # multi_accept on;
 }
 
-
 http {
-    include       mime.types;
-    default_type  application/octet-stream;
 
-    #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-    #                  '$status $body_bytes_sent "$http_referer" '
-    #                  '"$http_user_agent" "$http_x_forwarded_for"';
+  ##
+  # Basic Settings
+  ##
 
-    #access_log  logs/access.log  main;
+  sendfile on;
+  tcp_nopush on;
+  tcp_nodelay off;
+  keepalive_timeout 65;
+  types_hash_max_size 2048;
+  server_tokens off;
 
-    sendfile        on;
-    #tcp_nopush     on;
+  # server_names_hash_bucket_size 64;
+  # server_name_in_redirect off;
 
-    #keepalive_timeout  0;
-    keepalive_timeout  65;
+  client_max_body_size 10m;
 
-    gzip  on;
+  include /opt/nginx/conf/mime.types;
+  default_type application/octet-stream;
 
-    server {
-        listen       <%= node.nginx.address %>:<%= node.nginx.port %>;
-        server_name  _;
+  ##
+  # Logging Settings
+  ##
 
-        #charset koi8-r;
+  access_log /var/log/nginx/access.log;
+  error_log /var/log/nginx/error.log;
 
-        #access_log  logs/host.access.log  main;
+  ##
+  # Gzip Settings
+  ##
 
-        location / {
-            root   html;
-            index  index.html index.htm;
-        }
+  gzip on;
+  gzip_http_version 1.0;
+  gzip_comp_level 6;
+  gzip_min_length 1100;
+  gzip_buffers 16 8k;
+  gzip_proxied any;
+  gzip_types text/html text/plain text/xml application/xml application/xml+rss
+           text/css text/javascript application/javascript application/json;
 
-        #error_page  404              /404.html;
+  gzip_static on;
 
-        # redirect server error pages to the static page /50x.html
-        #
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   html;
-        }
-    }
+  gzip_proxied expired no-cache no-store private auth;
+  gzip_disable "MSIE [1-6]\.";
+  gzip_vary on;
 
-    include sites-enabled/*;
+  ##
+  # Virtual Host Configs
+  ##
+
+  include /opt/nginx/conf.d/*.conf;
+  include /opt/nginx/conf/sites-enabled/*;
 }
