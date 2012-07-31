@@ -68,9 +68,7 @@ LoadPlugin write_graphite
     EscapeCharacter "-"
   </Carbon>
 </Plugin>
-<% end %>
-
-<% if node.collectd[:use_rrd] %>
+<% else %>
 LoadPlugin rrdtool
 <Plugin "rrdtool">
   DataDir "/opt/collectd/rrd"
