@@ -30,6 +30,11 @@ link "#{INSTALL_DIR}/redis" do
   to "#{INSTALL_DIR}/redis-#{REDIS_VERSION}"
 end
 
+directory "/data/redis" do
+  recursive true
+  owner REDIS_USER
+end
+
 template "/etc/redis.conf" do
   source "redis.conf.erb"
   mode 0644
