@@ -17,6 +17,7 @@ auto-aof-rewrite-percentage 100
 auto-aof-rewrite-min-size 64mb
 slowlog-log-slower-than 10000
 slowlog-max-len 1024
+<% if node.redis[:version][/2\.4/] %>
 vm-enabled no
 vm-swap-file /tmp/redis.swap
 vm-max-memory 0
@@ -25,6 +26,11 @@ vm-pages 134217728
 vm-max-threads 4
 hash-max-zipmap-entries 512
 hash-max-zipmap-value 64
+<% else %>
+hash-max-ziplist-entries 512
+hash-max-ziplist-value 64
+slave-read-only <%= node.redis[:read_only_slave] ? "yes" : "no" %>
+<% end %>
 list-max-ziplist-entries 512
 list-max-ziplist-value 64
 set-max-intset-entries 512
