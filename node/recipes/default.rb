@@ -1,4 +1,6 @@
 include_recipe "source"
+package "python"
+package "libssl-dev"
 
 NODE_VERSION = node[:node][:version]
 NODE_PREFIX = "node-v#{NODE_VERSION}"
