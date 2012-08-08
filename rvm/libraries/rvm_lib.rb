@@ -23,17 +23,16 @@ def install_rvm_ruby(version)
   end
 end
 
-def create_rvm_gemset(ruby_desc, gemset_name, user_name)
-  user_home = "/home/#{user_name}"
+def create_rvm_gemset(ruby_desc, gemset_name)
   script "create gemset" do
     interpreter "bash"
-    user user_name
+    user rvm_user 
     code <<-EOH
-      export rvm_path=#{user_home}/.rvm
-      source #{user_home}/.rvm/scripts/rvm
+      export rvm_path=#{rvm_user_home}/.rvm
+      source #{rvm_user_home}/.rvm/scripts/rvm
       rvm use #{ruby_desc}
       rvm gemset create #{gemset_name}
     EOH
-    creates "#{user_home}/.rvm/gems/#{ruby_desc}@#{gemset_name}"
+    creates "#{rvm_user_home}/.rvm/gems/#{ruby_desc}@#{gemset_name}"
   end
 end
