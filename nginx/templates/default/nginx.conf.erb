@@ -44,10 +44,11 @@ http {
   gzip on;
   gzip_http_version 1.0;
   gzip_comp_level 6;
-  gzip_min_length 1100;
+  gzip_min_length 1400;
   gzip_buffers 16 8k;
   gzip_proxied any;
-  gzip_types text/html text/plain text/xml application/xml application/xml+rss
+  # text/html is gzipped by default
+  gzip_types text/plain text/xml application/xml application/xml+rss
            text/css text/javascript application/javascript application/json;
 
   gzip_static on;
