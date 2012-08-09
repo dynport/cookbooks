@@ -1,4 +1,4 @@
-Hostname    "<%= `hostname`.strip %>"
+Hostname    "<%= node.collectd[:hostname] ? node.collectd.hostname : `hostname`.strip %>"
 
 LoadPlugin syslog
 <% if log_level = node.collectd[:log_level] %>

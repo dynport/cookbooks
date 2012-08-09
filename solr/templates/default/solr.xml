@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <solr sharedLib="lib" persistent="true">
   <cores adminPath="/admin/cores">
-    <core name="<%= node.solr.initial_core %>" instanceDir="<%= @solr_home %>" dataDir="<%= @solr_home %>/data/<%= node.solr.initial_core %>"/>
+    <% if initial_core = node.solr[:initial_core] %>
+    <core name="<%= initial_core %>" instanceDir="<%= @solr_home %>" dataDir="<%= @solr_home %>/data/<%= initial_core %>"/>
+    <% end %>
+
+    <% if initial_cores = node.solr[:initial_cores] %>
+    <% initial_cores.each do |initial_core| %>
+    <core name="<%= initial_core %>" instanceDir="<%= @solr_home %>" dataDir="<%= @solr_home %>/data/<%= initial_core %>"/>
+    <% end %>
+    <% end %>
   </cores>
 </solr>
