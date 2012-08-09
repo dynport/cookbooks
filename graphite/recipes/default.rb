@@ -5,18 +5,22 @@ include_recipe "nginx"
   package pkg
 end
 
-GRAPHITE_PREFIX = "graphite-web-0.9.9"
+GRAPHITE_VERSION = node.graphite[:graphite_version]
+CARBON_VERSION = node.graphite[:carbon_version]
+WHISPER_VERSION = node.graphite[:whisper_version]
+
+GRAPHITE_PREFIX = "graphite-web-#{GRAPHITE_VERSION}"
 GRAPHITE_FILE = "#{GRAPHITE_PREFIX}.tar.gz"
 
-CARBON_PREFIX = "carbon-0.9.9"
+CARBON_PREFIX = "carbon-#{CARBON_VERSION}"
 CARBON_FILE = "#{CARBON_PREFIX}.tar.gz"
 
-WHISPER_PREFIX = "whisper-0.9.9"
+WHISPER_PREFIX = "whisper-#{WHISPER_VERSION}"
 WHISPER_FILE = "#{WHISPER_PREFIX}.tar.gz"
 
-download_file "https://launchpad.net/graphite/0.9/0.9.9/+download/#{GRAPHITE_FILE}"
-download_file "https://launchpad.net/graphite/0.9/0.9.9/+download/#{CARBON_FILE}"
-download_file "https://launchpad.net/graphite/0.9/0.9.9/+download/#{WHISPER_FILE}"
+download_file "https://launchpad.net/graphite/0.9/#{GRAPHITE_VERSION}/+download/#{GRAPHITE_FILE}"
+download_file "https://launchpad.net/graphite/0.9/#{CARBON_VERSION}/+download/#{CARBON_FILE}"
+download_file "https://launchpad.net/graphite/0.9/#{WHISPER_VERSION}/+download/#{WHISPER_FILE}"
 
 USER = node.graphite.user
 
