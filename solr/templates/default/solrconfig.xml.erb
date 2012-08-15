@@ -956,6 +956,7 @@
        Admin Handlers - This will register all the standard admin
        RequestHandlers.  
     -->
+  <requestHandler name="/stats" class="org.apache.solr.handler.admin.SolrInfoMBeanHandler" />
   <requestHandler name="/admin/" 
                   class="solr.admin.AdminHandlers" />
   <!-- This single handler is equivilent to the following... -->
