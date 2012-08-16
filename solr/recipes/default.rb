@@ -31,30 +31,6 @@ link "#{INSTALL_DIR}/apache-solr" do
   to SOLR_DIR
 end
 
-template "/etc/init.d/solr_master" do
-  source "solr-jetty.erb"
-  mode "0744"
-  variables(
-    :solr_home => "#{SOLR_DATA_DIR}/master",
-    :solr_port => node.solr.master_port,
-    :solr_host => node.solr[:host],
-    :role => "master",
-    :master_slave_options => "-Denable.master=true"
-  )
-end
-
-template "/etc/init.d/solr_slave" do
-  source "solr-jetty.erb"
-  mode "0744"
-  variables(
-    :solr_home => "#{SOLR_DATA_DIR}/slave",
-    :solr_port => node.solr.slave_port,
-    :solr_host => node.solr[:host],
-    :role => "slave",
-    :master_slave_options => "-Denable.slave=true -Dmaster.url=#{node.solr.master_url}"
-  )
-end
-
 ["#{SOLR_DATA_DIR}/master", "#{SOLR_DATA_DIR}/slave"].each do |solr_home|
   directory solr_home do
     action :create
@@ -86,3 +62,28 @@ end
     )
   end
 end
+
+template "/etc/init.d/solr_master" do
+  source "solr-jetty.erb"
+  mode "0744"
+  variables(
+    :solr_home => "#{SOLR_DATA_DIR}/master",
+    :solr_port => node.solr.master_port,
+    :solr_host => node.solr[:host],
+    :role => "master",
+    :master_slave_options => "-Denable.master=true"
+  )
+end
+
+template "/etc/init.d/solr_slave" do
+  source "solr-jetty.erb"
+  mode "0744"
+  variables(
+    :solr_home => "#{SOLR_DATA_DIR}/slave",
+    :solr_port => node.solr.slave_port,
+    :solr_host => node.solr[:host],
+    :role => "slave",
+    :master_slave_options => "-Denable.slave=true -Dmaster.url=#{node.solr.master_url}"
+  )
+end
+
