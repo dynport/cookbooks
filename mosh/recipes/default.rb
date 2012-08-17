@@ -1,3 +1,5 @@
+include_recipe "source"
+
 %w(protobuf-compiler libprotobuf-dev pkg-config libncurses5-dev zlib1g-dev libutempter-dev libio-pty-perl).each { |pkg| package pkg }
 
 MOSH_VERSION = node.mosh.version
