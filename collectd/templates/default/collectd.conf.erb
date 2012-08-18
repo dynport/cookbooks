@@ -61,12 +61,17 @@ LoadPlugin memcached
 </Plugin>
 <% end %>
 
-<% if node.collectd[:graphite_address] && node.collectd[:graphite_port] %>
+LoadPlugin disk
+<Plugin "disk">
+  Disk "/^sd.$/"
+</Plugin>
+
+<% if node.collectd[:graphite_address] %>
 LoadPlugin write_graphite
 <Plugin write_graphite>
   <Carbon>
     Host <%= node.collectd[:graphite_address].to_s.inspect %>
-    Port <%= node.collectd[:graphite_port].to_s.inspect %>
+    Port <%= (node.collectd[:graphite_port] || 2003).to_s.inspect %>
     Prefix "collectd."
     Postfix ""
     StoreRates false
