@@ -15,7 +15,7 @@ execute "install mosh" do
     make
     make install
   "
-  creates "/opt/mosh-#{VERSION}/bin/mosh"
+  creates "/opt/mosh-#{MOSH_VERSION}/bin/mosh"
 end
 
 link "/opt/mosh" do
