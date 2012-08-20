@@ -58,6 +58,7 @@ end
     owner SOLR_USER
     source "solrconfig.xml.erb"
     variables(
+      :solr_home => solr_home,
       :poll_interval => node.solr[:replication_poll_interval]
     )
   end

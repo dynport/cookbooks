@@ -1503,9 +1503,7 @@
     <!-- configure a healthcheck file for servers behind a
          loadbalancer 
       -->
-    <!--
-       <healthcheck type="file">server-enabled</healthcheck>
-      -->
+    <healthcheck type="file"><%= @solr_home %>/server-enabled.txt</healthcheck>
   </admin>
 
 </config>
