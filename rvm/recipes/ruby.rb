@@ -1,7 +1,8 @@
 include_recipe "rvm"
 
-if node[:rvm] && node[:rvm][:rubies]
-  rvm_node.rubies.each do |ruby|
-    install_rvm_ruby(rvm_user, ruby)
+#  install_rvm(rvm_user, rvm_user_home, rvm_version)
+if rvm_node_and_rubies_present?
+  node.rvm.rubies.each do |ruby|
+    install_rvm_ruby(node_rvm_user_or_node_user, ruby)
   end
 end

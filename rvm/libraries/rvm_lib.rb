@@ -1,6 +1,14 @@
+def rvm_node_and_rubies_present?
+  node[:rvm] && node[:rvm][:rubies]
+end
+
+def node_rvm_user_or_node_user
+  (node[:rvm] && node.rvm[:user]) || node[:user]
+end
+
 def install_rvm_ruby(user, version)
   rvm_dir = "/home/#{user}/.rvm"
-  bash "install #{version}" do
+  bash "install #{version} for user #{user}" do
     code ". #{rvm_dir}/scripts/rvm && rvm install #{version}"
     environment("rvm_path" => rvm_dir)
     creates "#{rvm_dir}/rubies/#{version}/bin/ruby"
@@ -53,7 +61,7 @@ def install_rvm(rvm_user, rvm_user_home, rvm_version=nil)
     owner rvm_user
   end
 
-  bash "instaill rvm" do
+  bash "install rvm" do
     user rvm_user
     environment("rvm_path" => rvm_dir, "HOME" => rvm_user_home)
     code %(bash #{src_dir}/rvm-installer --version #{rvm_version}; exit 0)

@@ -1,8 +1,5 @@
 require "pathname"
-rvm_user = node[:user] || node.rvm.user
-rvm_user_home = "/home/#{rvm_user}"
-rvm_version = node.rvm.version
 
-if rvm_user
-  install_rvm(rvm_user, rvm_user_home, rvm_version)
+if rvm_node_and_rubies_present?
+  install_rvm(node_rvm_user_or_node_user, "/home/#{node_rvm_user_or_node_user}", node.rvm.version)
 end
