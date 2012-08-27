@@ -3,7 +3,11 @@ backend default {
   .port = "<%= node.varnish.backend_port %>";
   # https://www.varnish-cache.org/trac/wiki/BackendPolling
   .probe = {
-    .url       = "/health_check";
+    .request =
+            "GET /health_check HTTP/1.1"
+            "Host: phraseapp.com"
+            "X-SSL-Forward: true"
+            "Connection: close";
     .timeout   = 2s;
     .interval  = 1s;
     .window    = 10;
@@ -118,7 +122,10 @@ sub vcl_deliver {
   # The below provides custom headers to indicate whether the response came from
   # varnish cache or directly from the app.
   if (obj.hits > 0) {
+    remove resp.http.X-Rack-Cache;
+    remove resp.http.Cache-Control;
     set resp.http.X-Varnish-Cache = "HIT";
+
   } else {
     set resp.http.X-Varnish-Cache = "MISS";
   }
