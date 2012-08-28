@@ -1,0 +1,46 @@
+main_config_file=<%= @icinga_root %>/etc/icinga.cfg
+physical_html_path=<%= @icinga_root %>/share
+url_html_path=/icinga
+url_stylesheets_path=/icinga/stylesheets
+http_charset=utf-8
+show_context_help=0
+highlight_table_rows=1
+use_pending_states=1
+use_logging=0
+cgi_log_file=<%= @icinga_root %>/share/log/icinga-cgi.log
+cgi_log_rotation_method=d
+cgi_log_archive_path=<%= @icinga_root %>/share/log
+enforce_comments_on_actions=0
+first_day_of_week=0
+use_authentication=1
+use_ssl_authentication=0
+authorized_for_system_information=icingaadmin
+authorized_for_configuration_information=icingaadmin
+authorized_for_full_command_resolution=icingaadmin
+authorized_for_system_commands=icingaadmin
+authorized_for_all_services=icingaadmin
+authorized_for_all_hosts=icingaadmin
+authorized_for_all_service_commands=icingaadmin
+authorized_for_all_host_commands=icingaadmin
+show_all_services_host_is_authorized_for=1
+show_partial_hostgroups=0
+default_statusmap_layout=5
+default_statuswrl_layout=4
+ping_syntax=/bin/ping -n -U -c 5 $HOSTADDRESS$
+refresh_rate=90
+refresh_type=1
+escape_html_tags=1
+persistent_ack_comments=0
+action_url_target=main
+notes_url_target=main
+lock_author_names=1
+default_downtime_duration=7200
+default_expiring_acknowledgement_duration=86400
+status_show_long_plugin_output=0
+display_status_totals=0
+tac_show_only_hard_state=0
+extinfo_show_child_hosts=0
+suppress_maintenance_downtime=0
+show_tac_header=1
+show_tac_header_pending=1
+tab_friendly_titles=1
