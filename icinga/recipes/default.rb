@@ -39,7 +39,7 @@ end
 end
 
 execute "create htpasswd" do
-  command "htpasswd -cb #{HTPASSWD_FILE_NAME} icingaadmin letmein && chown #{user_name} #{HTPASSWD_FILE_NAME}"
+  command "htpasswd -cb #{HTPASSWD_FILE_NAME} icingaadmin #{icinga.password} && chown #{icinga.username} #{HTPASSWD_FILE_NAME}"
   creates HTPASSWD_FILE_NAME
 end
 

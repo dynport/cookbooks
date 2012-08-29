@@ -41,12 +41,16 @@ class Icinga
     "icinga"
   end
 
+  def password
+    node.icinga.password
+  end
+
   def create_all_dirs!
     return if @dirs_created
     [dir, etc_dir, conf_d_dir].each do |dir_path|
       context.directory dir_path do
         mode "0755"
-        owner user_name
+        owner "icinga"
         recursive true
       end
     end
@@ -68,7 +72,7 @@ class Icinga
 
     context.template "#{conf_d_dir}/#{file_name}.cfg" do
       mode "0644"
-      owner user_name
+      owner "icinga"
       variables custom_variables
       source custom_source
       notifies :run, "execute[restart_icinga]"
