@@ -18,6 +18,11 @@ define command {
   command_line /opt/nagios-ruby-plugins/libexec/check_ssl_expiration -H $ARG1$ -c $ARG2$ -w $ARG3$
 }
 
+define command {
+  command_name check_solr_replication_age
+  command_line /opt/nagios-ruby-plugins/libexec/check_solr_replication_age -H $ARG1$ -c $ARG2$ -w $ARG3$
+}
+
 define command{
   command_name    check_local_disk
   command_line    $USER1$/check_disk -w $ARG1$ -c $ARG2$ -p $ARG3$

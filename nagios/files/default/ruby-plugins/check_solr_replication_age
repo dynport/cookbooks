@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+require File.expand_path("../nagios.rb", __FILE__)
+
+rescue_from_all do
+  attributes = {}
+
+  OPTS = OptionParser.new do |o|
+    o.on("-H PATH", String, "Path to the replication handler") do |path|
+      attributes[:path] = path
+    end
+
+    o.on("-w VALUE", Integer, "Time since raplication in seconds") do |value|
+      attributes[:warning] = value
+    end
+
+    o.on("-c VALUE", Integer, "Time since raplication in seconds") do |value|
+      attributes[:critical] = value
+    end
+  end
+
+  OPTS.parse(ARGV)
+
+  smaller_is_worse!
+
+  validate_attributes!(attributes) do
+    validate_presence(attributes, :path)
+  end
+
+  require "net/http"
+  require "rubygems"
+  require "json"
+  require "time"
+
+  url = "#{attributes.fetch(:path)}?command=details&wt=json"
+  puts "FETCHING #{url}"
+  body = Net::HTTP.get(URI(url))
+  json = JSON.parse(body)
+
+  replication_age = (Time.now - Time.parse(json.fetch("details").fetch("slave").fetch("indexReplicatedAt")))
+  puts "url: #{url}"
+  puts "age: #{replication_age}"
+  raise "replication age was nil" if replication_age.nil?
+  if replication_age > attributes.fetch(:critical)
+    abort_critical
+  elsif replication_age > attributes.fetch(:warning)
+    abort_warning
+  end
+end
