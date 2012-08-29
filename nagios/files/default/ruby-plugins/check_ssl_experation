@@ -1,0 +1,78 @@
+#!/usr/bin/env ruby
+require "optparse"
+require File.expand_path("../nagios.rb", __FILE__)
+
+attributes = {}
+
+OPTS = OptionParser.new do |o|
+  o.on("-H HOST", String, "Host to be checked") do |host|
+    attributes[:host] = host
+  end
+
+  o.on("-c VALUE", Integer, "CRITICAL when expiry <= days") do |critical_value|
+    attributes[:critical] = critical_value
+  end
+
+  o.on("-w VALUE", Integer, "WARNING when expiry <= days") do |warn_value|
+    attributes[:warning] = warn_value
+  end
+end
+
+def validation_messages_from_attributes(attributes)
+  messages = []
+  messages << "Host needs to be set" if attributes[:host].nil?
+  messages << "CRITICAL value must be set" if attributes[:critical].nil?
+  messages << "WARNING value must be set" if attributes[:warning].nil?
+  messages << "WARNING must be bigger than CRITICAL" if attributes[:warning] && attributes[:critical] && (attributes[:warning] <= attributes[:critical])
+  messages
+end
+
+def cert_from_host(host)
+  require "net/https"
+  uri = URI.parse("https://#{host}")
+  http = Net::HTTP.new(uri.host,uri.port)
+  http.use_ssl = true
+  http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+  http.start do |h|
+    @cert = h.peer_cert
+  end
+  return @cert
+end
+
+ONE_DAY = 3600 * 24
+
+def days_remaining(cert)
+  ((cert.not_after - Time.now) / ONE_DAY).floor
+end
+
+def cert_to_string(cert)
+  <<-EOF
+Days:    #{days_remaining(cert)}
+Subject: #{cert.subject}
+Issuer:  #{cert.issuer}
+Serial:  #{cert.serial}
+Issued:  #{cert.not_before}
+Expires: #{cert.not_after}
+EOF
+end
+
+OPTS.parse(ARGV)
+
+validate_attributes!(attributes)
+
+cert = cert_from_host(attributes.fetch(:host))
+if cert.nil?
+  abort_unknown
+end
+
+puts cert_to_string(cert)
+
+remaining = days_remaining(cert)
+
+if remaining < attributes.fetch(:critical)
+  abort_critical
+elsif remaining < attributes.fetch(:warning)
+  abort_warning
+else
+  abort_ok
+end
