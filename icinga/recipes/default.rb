@@ -2,58 +2,38 @@ include_recipe "source"
 include_recipe "nagios::nrpe"
 include_recipe "nagios::plugins"
 
-version = node.icinga.version
-name = "icinga-#{version}"
-file_name = "#{name}.tar.gz"
-
 package "apache2"
 
-download_file "http://downloads.sourceforge.net/project/icinga/icinga/#{version}/#{file_name}"
+icinga = Icinga.new(self)
 
-user_name = "icinga"
+download_file "http://downloads.sourceforge.net/project/icinga/icinga/#{icinga.version}/#{icinga.file_name}"
 
-user user_name
+user icinga.username
 
-HTPASSWD_FILE_NAME = "/opt/#{name}/etc/htpasswd.users"
+HTPASSWD_FILE_NAME = "#{icinga.etc_dir}/htpasswd.users"
 
 execute "install icinga" do
   cwd "/opt/src"
   command <<-EOF
-  tar xvfz #{file_name}
-  cd #{name}
-  ./configure --prefix=/opt/#{name} --with-httpd-conf=/etc/apache2/conf.d
+  tar xvfz #{icinga.file_name}
+  cd #{icinga.name}
+  ./configure --prefix=#{icinga.dir} --with-httpd-conf=/etc/apache2/conf.d
   make all && make install install-html install-webconf install-init install-commandmode
   EOF
-  creates "/opt/#{name}/bin/icinga"
+  creates "#{icinga.dir}/bin/icinga"
   notifies :run, "execute[reload_apache]"
 end
 
-icinga_config_dir = "/opt/#{name}/etc"
+icinga.create_all_dirs!
 
-directory icinga_config_dir do
-  mode "0755"
-  owner user_name
-  recursive true
-end
-
-directory "#{icinga_config_dir}/conf.d" do
-  mode "0755"
-  owner user_name
-  recursive true
-end
-
-%w(hosts commands contacts services timeperiods).each do |cfg_name|
-  template "#{icinga_config_dir}/conf.d/#{cfg_name}.cfg" do
-    mode "0644"
-    owner user_name
-    notifies :run, "execute[restart_icinga]"
-  end
+%w(templates hosts commands contacts services timeperiods).each do |cfg_name|
+  icinga.write_config(cfg_name)
 end
 
 %w(icinga.cfg cgi.cfg).each do |cfg_file|
-  template "#{icinga_config_dir}/#{cfg_file}" do
-    variables(:icinga_root => "/opt/#{name}")
-    owner user_name
+  template "#{icinga.etc_dir}/#{cfg_file}" do
+    variables(:icinga_root => icinga.dir)
+    owner icinga.username
     mode "0644"
   end
 end
@@ -69,13 +49,13 @@ group "icinga" do
   append true
 end
 
-file "#{icinga_config_dir}/resource.cfg" do
+file "#{icinga.etc_dir}/resource.cfg" do
   content "$USER1$=/opt/nagios-plugins/libexec\n"
-  owner user_name
+  owner icinga.username
 end
 
 link "/opt/icinga" do
-  to "/opt/#{name}"
+  to icinga.dir
 end
 
 link "/usr/lib/cgi-bin/icinga" do
@@ -84,11 +64,6 @@ end
 
 service "icinga" do
   action [:enable, :start]
-end
-
-execute "restart_icinga" do
-  command "/etc/init.d/icinga restart"
-  action :nothing
 end
 
 execute "reload_apache" do
