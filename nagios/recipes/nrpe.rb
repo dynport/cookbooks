@@ -4,6 +4,8 @@ include_recipe "nagios::plugins"
 package "build-essential"
 package "libssl-dev"
 
+user "icinga"
+
 version = "2.13"
 name = "nrpe-#{version}"
 file_name = "#{name}.tar.gz"
@@ -26,13 +28,25 @@ link "/opt/nrpe" do
   to "/opt/#{name}"
 end
 
-directory "/opt/#{name}/etc" do
-  recursive true
+["/opt/#{name}/etc", "/opt/#{name}/var", "/opt/#{name}/var/run"].each do |dir|
+   directory dir do
+    recursive true
+    owner "icinga"
+    mode "0755"
+  end
 end
 
-template "/opt/#{name}/etc/nrpe.cfg"
+template "/opt/#{name}/etc/nrpe.cfg" do
+  notifies :restart, "service[nrpe]"
+  owner "icinga"
+  mode "0644"
+end
 
 template "/etc/init.d/nrpe" do
   mode "0755"
   source "nrpe-init-script.erb"
+end
+
+service "nrpe" do
+  action [:enable, :start]
 end
