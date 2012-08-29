@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+require File.expand_path("../nagios.rb", __FILE__)
+
+rescue_from_all do
+  attributes = {}
+
+  OPTS = OptionParser.new do |o|
+    o.on("-H PATH", String, "Path to the solr index") do |path|
+      attributes[:path] = path
+    end
+
+    o.on("-w VALUE", Integer, "WARNING Number of records") do |value|
+      attributes[:warning] = value
+    end
+
+    o.on("-c VALUE", Integer, "CRITICAL Number of records") do |value|
+      attributes[:critical] = value
+    end
+
+    o.on("-f FILTER", String, "Filter to be used") do |value|
+      attributes[:filter] = value
+    end
+  end
+
+  OPTS.parse(ARGV)
+
+  validate_attributes!(attributes) do
+    validate_presence(attributes, :path)
+  end
+
+  require "net/http"
+  require "rubygems"
+  require "json"
+  require "time"
+
+  url = "#{attributes.fetch(:path)}/select?q=*:*&rows=0&wt=json"
+  if fq = attributes[:filter]
+    url << "&fq=#{URI.escape(fq)}"
+  end
+  puts "FETCHING #{url}"
+  body = Net::HTTP.get(URI(url))
+  json = JSON.parse(body)
+  num_found = json.fetch("response").fetch("numFound")
+  puts "num_found: #{num_found}"
+
+  if num_found < attributes.fetch(:critical)
+    abort_critical
+  elsif num_found < attributes.fetch(:warning)
+    abort_warning
+  else
+    abort_ok
+  end
+end
