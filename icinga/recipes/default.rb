@@ -3,6 +3,7 @@ include_recipe "nagios::nrpe"
 include_recipe "nagios::plugins"
 
 package "apache2"
+package "libgd2-xpm-dev"
 
 icinga = Icinga.new(self)
 
