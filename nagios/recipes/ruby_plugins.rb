@@ -17,7 +17,6 @@ end
 
 Dir.glob(File.expand_path("../../files/default/ruby-plugins/*", __FILE__)).each do |path|
   file = File.basename(path)
-  p file
   cookbook_file "#{libexec_path}/#{file}" do
     owner icinga.username
     mode "0755"
