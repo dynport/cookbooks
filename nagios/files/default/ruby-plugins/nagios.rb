@@ -35,7 +35,6 @@ end
 def rescue_from_all
   yield
 rescue SystemExit => err
-  puts "caught: #{err.class} #{err.message}"
   exit(err.status)
 rescue Exception => err
   puts "ERROR: #{err.message}"
