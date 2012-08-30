@@ -36,7 +36,7 @@ rescue_from_all do
   json = JSON.parse(body)
 
   replication_age = (Time.now - Time.parse(json.fetch("details").fetch("slave").fetch("indexReplicatedAt")))
-  puts "url=#{url} age=#{replication_age}"
+  puts "age=#{replication_age} url=#{url}"
   raise "replication age was nil" if replication_age.nil?
   if replication_age > attributes.fetch(:critical)
     abort_critical
