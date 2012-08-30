@@ -32,13 +32,11 @@ rescue_from_all do
   require "time"
 
   url = "#{attributes.fetch(:path)}?command=details&wt=json"
-  puts "FETCHING #{url}"
   body = Net::HTTP.get(URI(url))
   json = JSON.parse(body)
 
   replication_age = (Time.now - Time.parse(json.fetch("details").fetch("slave").fetch("indexReplicatedAt")))
-  puts "url: #{url}"
-  puts "age: #{replication_age}"
+  puts "url=#{url} age=#{replication_age}"
   raise "replication age was nil" if replication_age.nil?
   if replication_age > attributes.fetch(:critical)
     abort_critical
