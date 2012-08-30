@@ -1,5 +1,7 @@
 include_recipe "source"
 
+user "collectd"
+
 COLLECTD_PREFIX = "collectd-#{node.collectd.version}"
 COLLECTD_FILE = "#{COLLECTD_PREFIX}.tar.gz"
 COLLECTD_DIR = "/opt/#{COLLECTD_PREFIX}"
@@ -35,9 +37,16 @@ PYHTON_DIR = "/opt/collectd/lib/collectd/plugins/python"
 
 directory PYHTON_DIR do
   recursive true
+  mode "0755"
 end
 
-cookbook_file "/opt/collectd/lib/collectd/plugins/python/redis_info.py"
+%w(solr_info redis_info).each do |file|
+  cookbook_file "/opt/collectd/lib/collectd/plugins/python/#{file}.py" do
+    mode "0644"
+    owner "collectd"
+  end
+end
+
 
 template "/etc/collectd.conf" do
   source "collectd.conf.erb"
@@ -50,6 +59,8 @@ template "/etc/collectd.conf" do
     "processes" => node.collectd[:processes],
     "nginx_url" => node.collectd[:nginx_url]
   )
+  owner "collectd"
+  mode "0644"
   notifies :run, 'execute[start_or_restart_collectd]'
 end
 
