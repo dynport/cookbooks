@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+require File.expand_path("../nagios.rb", __FILE__)
+
+rescue_from_all do
+  attributes = {}
+
+  OPTS = OptionParser.new do |o|
+    o.on("--credentials CREDENTIALS", String, "MySQL credentials") do |value|
+      attributes[:credentials] = value
+    end
+
+    o.on("-w VALUE", Integer, "WARNING when seconds behind master >= value") do |value|
+      attributes[:warning] = value
+    end
+
+    o.on("-c VALUE", Integer, "CRITICAL when seconds behind master >= value") do |value|
+      attributes[:critical] = value
+    end
+  end
+
+  OPTS.parse(ARGV)
+
+  smaller_is_worse!
+
+  validate_attributes!(attributes) do
+    validate_presence(attributes, :credentials)
+  end
+
+  credentials = attributes.fetch(:credentials)
+
+  out = `mysql #{credentials} -e "SHOW SLAVE STATUS\\G"`
+
+  if string = out[/Seconds_Behind_Master: (\d+)/, 1]
+    seconds_behind_master = string.to_i
+    puts "seconds_behind_master=#{seconds_behind_master} credentials=#{credentials.inspect}"
+    raise "replication age was nil" if seconds_behind_master.nil?
+    if seconds_behind_master > attributes.fetch(:critical)
+      abort_critical
+    elsif seconds_behind_master > attributes.fetch(:warning)
+      abort_warning
+    end
+  else
+    puts "credentials=#{credentials.inspect}"
+    puts out
+    abort_unknown
+  end
+end

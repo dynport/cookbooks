@@ -29,6 +29,11 @@ define command {
 }
 
 define command {
+  command_name check_mysql_replication_status
+  command_line /opt/nagios-ruby-plugins/libexec/check_mysql_replication_status -w $ARG1$ -c $ARG2$ --credentials "$ARG3$"
+}
+
+define command {
   command_name check_solr_index
   command_line /opt/nagios-ruby-plugins/libexec/check_solr_index -H $ARG1$ -c $ARG2$ -w $ARG3$ $ARG4$
 }
