@@ -1,12 +1,12 @@
 define command{
   command_name  notify-host-by-email
   command_line  /usr/bin/printf "%b" "***** Icinga *****\n\nNotification Type: $NOTIFICATIONTYPE$\nHost: $HOSTNAME$\nState: $HOSTSTATE$\nAddress: $HOSTADDRESS$\nInfo: $HOSTOUTPUT$\n\nDate/Time: $LONGDATETIME$\n" | /bin/mail -s "** $NOTIFICATIONTYPE$ Host Alert: $HOSTNAME$ is $HOSTSTATE$ **" $CONTACTEMAIL$
-  }
+}
 
 define command{
   command_name  notify-service-by-email
   command_line  /usr/bin/printf "%b" "***** Icinga *****\n\nNotification Type: $NOTIFICATIONTYPE$\n\nService: $SERVICEDESC$\nHost: $HOSTALIAS$\nAddress: $HOSTADDRESS$\nState: $SERVICESTATE$\n\nDate/Time: $LONGDATETIME$\n\nAdditional Info:\n\n$SERVICEOUTPUT$\n" | /bin/mail -s "** $NOTIFICATIONTYPE$ Service Alert: $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$ **" $CONTACTEMAIL$
-  }
+}
 
 define command{
   command_name    check-host-alive
@@ -25,17 +25,17 @@ define command {
 
 define command {
   command_name check_solr_replication_age
-  command_line /opt/nagios-ruby-plugins/libexec/check_solr_replication_age -H $ARG1$ -c $ARG2$ -w $ARG3$
+  command_line /opt/nagios-ruby-plugins/libexec/check_solr_replication_age -H $ARG1$ -w $ARG2$ -c $ARG3$
+}
+
+define command {
+  command_name check_solr_index
+  command_line /opt/nagios-ruby-plugins/libexec/check_solr_index -H $ARG1$ -w $ARG2$ -c $ARG3$ $ARG4$
 }
 
 define command {
   command_name check_mysql_replication_status
   command_line /opt/nagios-ruby-plugins/libexec/check_mysql_replication_status -w $ARG1$ -c $ARG2$ --credentials "$ARG3$"
-}
-
-define command {
-  command_name check_solr_index
-  command_line /opt/nagios-ruby-plugins/libexec/check_solr_index -H $ARG1$ -c $ARG2$ -w $ARG3$ $ARG4$
 }
 
 define command{
