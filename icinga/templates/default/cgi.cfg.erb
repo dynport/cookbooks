@@ -1,5 +1,5 @@
-main_config_file=<%= @icinga_root %>/etc/icinga.cfg
-physical_html_path=<%= @icinga_root %>/share
+main_config_file=<%= @icinga.dir %>/etc/icinga.cfg
+physical_html_path=<%= @icinga.dir %>/share
 url_html_path=/icinga
 url_stylesheets_path=/icinga/stylesheets
 http_charset=utf-8
@@ -7,9 +7,9 @@ show_context_help=0
 highlight_table_rows=1
 use_pending_states=1
 use_logging=0
-cgi_log_file=<%= @icinga_root %>/share/log/icinga-cgi.log
+cgi_log_file=<%= @icinga.var_dir%>/log/icinga-cgi.log
 cgi_log_rotation_method=d
-cgi_log_archive_path=<%= @icinga_root %>/share/log
+cgi_log_archive_path=<%= @icinga.var_dir %>/share/log
 enforce_comments_on_actions=0
 first_day_of_week=0
 use_authentication=1

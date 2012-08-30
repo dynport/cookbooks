@@ -37,6 +37,10 @@ class Icinga
     "#{etc_dir}/conf.d"
   end
 
+  def var_dir
+    "/data/icinga"
+  end
+
   def username
     "icinga"
   end

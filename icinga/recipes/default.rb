@@ -4,6 +4,7 @@ include_recipe "nagios::plugins"
 
 package "apache2"
 package "libgd2-xpm-dev"
+package "sendmail"
 
 icinga = Icinga.new(self)
 
@@ -13,12 +14,18 @@ user icinga.username
 
 HTPASSWD_FILE_NAME = "#{icinga.etc_dir}/htpasswd.users"
 
+directory "/data/icinga" do
+  owner icinga.username
+  mode "0755"
+  recursive true
+end
+
 execute "install icinga" do
   cwd "/opt/src"
   command <<-EOF
   tar xvfz #{icinga.file_name}
   cd #{icinga.name}
-  ./configure --prefix=#{icinga.dir} --with-httpd-conf=/etc/apache2/conf.d
+  ./configure --prefix=#{icinga.dir} --with-httpd-conf=/etc/apache2/conf.d --localstatedir=/data/icinga
   make all && make install install-html install-webconf install-init install-commandmode
   EOF
   creates "#{icinga.dir}/bin/icinga"
@@ -33,7 +40,7 @@ end
 
 %w(icinga.cfg cgi.cfg).each do |cfg_file|
   template "#{icinga.etc_dir}/#{cfg_file}" do
-    variables(:icinga_root => icinga.dir)
+    variables(:icinga => icinga)
     owner icinga.username
     mode "0644"
   end

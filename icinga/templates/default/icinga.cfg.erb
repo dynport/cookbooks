@@ -1,28 +1,22 @@
-log_file=<%= @icinga_root %>/var/icinga.log
-cfg_dir=<%= @icinga_root %>/etc/conf.d
-# cfg_file=<%= @icinga_root %>/etc/objects/commands.cfg
-# cfg_file=<%= @icinga_root %>/etc/objects/contacts.cfg
-# cfg_file=<%= @icinga_root %>/etc/objects/timeperiods.cfg
-# cfg_file=<%= @icinga_root %>/etc/objects/templates.cfg
-# cfg_file=<%= @icinga_root %>/etc/objects/localhost.cfg
-# cfg_dir=<%= @icinga_root %>/etc/modules
-object_cache_file=<%= @icinga_root %>/var/objects.cache
-precached_object_file=<%= @icinga_root %>/var/objects.precache
-resource_file=<%= @icinga_root %>/etc/resource.cfg
-status_file=<%= @icinga_root %>/var/status.dat
+log_file=<%= @icinga.var_dir %>/icinga.log
+cfg_dir=<%= @icinga.dir %>/etc/conf.d
+object_cache_file=<%= @icinga.var_dir %>/objects.cache
+precached_object_file=<%= @icinga.var_dir %>/objects.precache
+resource_file=<%= @icinga.dir %>/etc/resource.cfg
+status_file=<%= @icinga.var_dir %>/status.dat
 status_update_interval=10
 icinga_user=icinga
 icinga_group=icinga
 check_external_commands=1
 command_check_interval=-1
-command_file=<%= @icinga_root %>/var/rw/icinga.cmd
+command_file=<%= @icinga.var_dir %>/rw/icinga.cmd
 external_command_buffer_slots=4096
-lock_file=<%= @icinga_root %>/var/icinga.lock
+lock_file=<%= @icinga.var_dir %>/icinga.lock
 temp_file=/tmp/icinga.tmp
 temp_path=/tmp
 event_broker_options=-1
 log_rotation_method=d
-log_archive_path=<%= @icinga_root %>/var/archives
+log_archive_path=<%= @icinga.var_dir %>/archives
 use_daemon_log=1
 use_syslog=1
 use_syslog_local_facility=0
@@ -44,7 +38,7 @@ max_host_check_spread=30
 max_concurrent_checks=0
 check_result_reaper_frequency=10
 max_check_result_reaper_time=30
-check_result_path=<%= @icinga_root %>/var/spool/checkresults
+check_result_path=<%= @icinga.var_dir %>/spool/checkresults
 max_check_result_file_age=3600
 cached_host_check_horizon=15
 cached_service_check_horizon=15
@@ -62,7 +56,7 @@ notification_timeout=30
 ocsp_timeout=5
 perfdata_timeout=5
 retain_state_information=1
-state_retention_file=<%= @icinga_root %>/var/retention.dat
+state_retention_file=<%= @icinga.var_dir %>/retention.dat
 retention_update_interval=60
 use_retained_program_state=1
 dump_retained_host_service_states_to_neb=1
@@ -100,7 +94,7 @@ high_service_flap_threshold=20.0
 low_host_flap_threshold=5.0
 high_host_flap_threshold=20.0
 date_format=us
-p1_file=<%= @icinga_root %>/lib/p1.pl
+p1_file=<%= @icinga.dir %>/lib/p1.pl
 enable_embedded_perl=0
 use_embedded_perl_implicitly=1
 stalking_event_handlers_for_hosts=0
@@ -118,6 +112,6 @@ use_large_installation_tweaks=0
 enable_environment_macros=0
 debug_level=0
 debug_verbosity=2
-debug_file=<%= @icinga_root %>/var/icinga.debug
+debug_file=<%= @icinga.var_dir %>/icinga.debug
 max_debug_file_size=100000000
 event_profiling_enabled=0
