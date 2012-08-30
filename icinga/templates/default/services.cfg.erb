@@ -11,10 +11,3 @@ define service{
   service_description Disk
   check_command check_local_disk!15%!10%!/
 }
-
-define service{
-  use generic-service
-  host_name localhost
-  service_description OtherDisk
-  check_command check_local_disk!15%!10%!/
-}
