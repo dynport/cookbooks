@@ -37,11 +37,10 @@ rescue_from_all do
   if fq = attributes[:filter]
     url << "&fq=#{URI.escape(fq)}"
   end
-  puts "FETCHING #{url}"
   body = Net::HTTP.get(URI(url))
   json = JSON.parse(body)
   num_found = json.fetch("response").fetch("numFound")
-  puts "num_found: #{num_found}"
+  puts "num_found=#{num_found} url=#{url}"
 
   if num_found < attributes.fetch(:critical)
     abort_critical
