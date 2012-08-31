@@ -55,8 +55,10 @@ directory "#{JENKINS_HOME}/plugins" do
 end
 
 node.jenkins.plugins.each do |plugin|
-  remote_file "#{JENKINS_HOME}/plugins/#{plugin}.hpi" do
+  plugin_path = "#{JENKINS_HOME}/plugins/#{plugin}.hpi"
+  remote_file plugin_path do
     source "http://updates.jenkins-ci.org/latest/#{plugin}.hpi"
     owner JENKINS_USER
+    not_if "test -e #{plugin_path}"
   end
 end
