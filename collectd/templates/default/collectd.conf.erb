@@ -61,6 +61,28 @@ LoadPlugin memcached
 </Plugin>
 <% end %>
 
+<%
+  solr_host = node.collectd[:solr_host]
+  solr_port = node.collectd[:solr_port]
+  solr_path = node.collectd[:solr_path]
+  if solr_host && solr_port && solr_path
+%>
+<LoadPlugin python>
+  Globals true
+</LoadPlugin>
+<Plugin python>
+  ModulePath "/opt/collectd/lib/collectd/plugins/python"
+  Import "solr_info"
+
+  <Module solr_info>
+    Host <%= solr_host.inspect %>
+    Port <%= solr_port %>
+    Path <%= solr_path.inspect %>
+    Verbose false
+  </Module>
+</Plugin>
+<% end %>
+
 LoadPlugin disk
 <Plugin "disk">
   Disk "/^sd.$/"
