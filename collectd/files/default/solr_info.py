@@ -27,11 +27,11 @@ class SolrServer():
             config[config_value.key] = config_value.values[0]
         self.host = config.get("Host", None)
         self.port = config.get("Port", None)
-        self.path = config.get("URI", None)
+        self.path = config.get("Path", None)
         
         if not self.host: raise RuntimeError("Host must be set")
         if not self.port: raise RuntimeError("Port must be set")
-        if not self.path: raise RuntimeError("URI must be set")
+        if not self.path: raise RuntimeError("Path must be set")
 
         self.port = int(self.port)
 
