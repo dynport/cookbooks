@@ -32,8 +32,11 @@ directory JENKINS_JAR_DIR do
   recursive true
 end
 
+# jenkins_url = "http://mirrors.jenkins-ci.org"
+jenkins_url = "http://mirrors.esast.com"
+
 remote_file JENKINS_PATH do
-  source "http://mirrors.jenkins-ci.org/war/#{node.jenkins.version}/jenkins.war"
+  source "#{jenkins_url}/war/#{node.jenkins.version}/jenkins.war"
   owner JENKINS_USER
   mode "0644"
   not_if "test -e #{JENKINS_PATH}"
@@ -57,7 +60,7 @@ end
 node.jenkins.plugins.each do |plugin|
   plugin_path = "#{JENKINS_HOME}/plugins/#{plugin}.hpi"
   remote_file plugin_path do
-    source "http://updates.jenkins-ci.org/latest/#{plugin}.hpi"
+    source "#{jenkins_url}/plugins/#{plugin}/latest/#{plugin}.hpi"
     owner JENKINS_USER
     not_if "test -e #{plugin_path}"
   end
