@@ -4,6 +4,18 @@
 # Contributed by Andrew Ryder 06-22-02
 # Slight mods by Ethan Galstad 07-09-02
 
+### BEGIN INIT INFO
+# Provides:          nrpe
+# Required-Start:    $local_fs $remote_fs $network $syslog
+# Required-Stop:     $local_fs $remote_fs $network $syslog
+# Should-Start:
+# Should-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: nrpe
+# Description:       nrpe
+### END INIT INFO
+
 NrpeBin=/opt/nrpe-2.13/bin/nrpe
 NrpeCfg=/opt/nrpe-2.13/etc/nrpe.cfg
 
