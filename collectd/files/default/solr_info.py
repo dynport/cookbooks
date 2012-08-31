@@ -39,6 +39,7 @@ class SolrServer():
         self.info("server config: host=%s, port=%s, path=%s" % (self.host, self.port, self.path))
     
     def read(self, data=None):
+        self.cached_response = None
         all_stats = self.all_stats()
         for metric in all_stats:
             stats = all_stats[metric]
