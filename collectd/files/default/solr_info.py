@@ -19,7 +19,8 @@ class SolrServer():
     }
     cached_response = None
     verbose = False
-    keys_to_track = ( "cumulative_evictions", "cumulative_hits", "cumulative_inserts", "cumulative_lookups", "evictions", "hits", "inserts", "lookups" )
+    keys_to_track = ( "evictions", "hits", "inserts", "lookups" )
+    cached_stats = None
 
     def configure(self, config_object):
         config = {}
