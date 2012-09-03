@@ -41,9 +41,13 @@ class SolrServer():
         self.info("server config: host=%s, port=%s, path=%s" % (self.host, self.port, self.path))
     
     def read(self, data=None):
-        self.cached_response = None
+        self.reset_cache()
         self.handle_cache_stats()
         self.handle_avg_stats()
+
+    def reset_cache(self):
+        self.cached_response = None
+        self.cached_stats = None
     
     def handle_avg_stats(self):
         self.dispatch_metric("avg_time_per_request", value=self.search_stats()["avgTimePerRequest"])
