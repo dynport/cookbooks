@@ -6,6 +6,7 @@ else:
 import optparse
 import json
 import httplib
+import datetime
 
 PLUGIN_NAME = "solr_info"
 
@@ -41,15 +42,23 @@ class SolrServer():
     
     def read(self, data=None):
         self.cached_response = None
+        self.handle_cache_stats()
+        self.handle_avg_stats()
+    
+    def handle_avg_stats(self):
+        self.dispatch_metric("avg_time_per_request", value=self.search_stats()["avgTimePerRequest"])
+        self.dispatch_metric("avg_requests_per_second", value=self.search_stats()["avgRequestsPerSecond"])
+        
+    def handle_cache_stats(self):
         all_stats = self.all_stats()
         for metric in all_stats:
-            stats = all_stats[metric]
-            for key in stats:
-                type_instance = "%s.%s" % (metric, key)
-                value = stats[key]
-                val = collectd.Values(plugin=PLUGIN_NAME, type_instance=type_instance, values=[value], type="gauge")
-                self.info("Sending value: %s=%s" % (type_instance, value))
-                val.dispatch()
+            for key, value in all_stats[metric].iteritems():
+                self.dispatch_metric("%s.%s" % (metric, key), value=value)
+
+    def dispatch_metric(self, type_instance, value, the_type="gauge"):
+        val = collectd.Values(plugin=PLUGIN_NAME, type_instance=type_instance, values=[value], type=the_type)
+        self.info("Sending value: %s=%s" % (type_instance, value))
+        val.dispatch()
     
     def response(self):
         if not self.cached_response:
@@ -57,14 +66,36 @@ class SolrServer():
         return self.cached_response
 
     def fetch_response(self):
+        started = datetime.datetime.now()
         con = httplib.HTTPConnection(self.host, self.port)
         self.info("Fetching host=%s port=%s path=%s" % (self.host, self.port, self.path))
-        con.request("get", "%s?stats=true&wt=json&cat=CACHE" % (self.path))
+        con.request("get", "%s?stats=true&wt=json&key=fieldValueCache&key=filterCache&key=documentCache&key=queryResultCache&key=search" % (self.path))
         body = con.getresponse().read()
+        self.info("fetched response in %.4f" % (self.diff_from(started)))
         return json.loads(body)
 
+    def stats(self):
+        if self.cached_stats: return self.cached_stats
+        stats = {}
+        current_key = None
+        for key_or_value in self.response()["solr-mbeans"]:
+            if not current_key:
+                current_key = key_or_value
+            else:
+                stats[current_key] = key_or_value
+                current_key = None
+        self.cached_stats = stats
+        return self.cached_stats
+
+    def search_stats(self):
+        return self.stats()["QUERYHANDLER"]["search"]["stats"]
+
     def cache(self):
-        return self.response()["solr-mbeans"][1]
+        return self.stats()["CACHE"]
+
+    def diff_from(self, old_time):
+        delta = datetime.datetime.now() - old_time
+        return (delta.seconds + (delta.microseconds / 1000000.0))
 
     def stats_for(self, key):
         stats = self.cache()[key]["stats"]
