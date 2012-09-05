@@ -61,7 +61,7 @@ def validate_thresholds(attributes)
   messages << "WARNING must be set" if attributes[:warning].nil?
   if attributes[:warning] && attributes[:critical]
     if ((attributes[:warning] - attributes[:critical]) * comparision_factor) <= 0
-      messages << "WARNING must be #{smaller_is_worse? ? "bigger" : "smaller"} than CRITICAL" 
+      messages << "WARNING must be #{smaller_is_worse? ? "smaller" : "smaller"} than CRITICAL" 
       end
   end
   messages
