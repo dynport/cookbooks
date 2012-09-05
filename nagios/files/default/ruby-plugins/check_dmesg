@@ -54,7 +54,7 @@ rescue_from_all do
 
   recent = attributes.fetch(:recent)
 
-  messages = Message.all.select { |m| m.seconds_ago < recent }
+  messages = Message.all.select { |m| m.seconds_since_boot && m.seconds_ago < recent }
   cnt = messages.count
   
   require "time"
