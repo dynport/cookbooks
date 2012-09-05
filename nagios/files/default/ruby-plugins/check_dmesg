@@ -1,0 +1,70 @@
+#!/usr/bin/env ruby
+require File.expand_path("../nagios.rb", __FILE__)
+
+UPTIME = File.read("/proc/uptime").split(" ").first.to_f
+
+class Message
+  attr_reader :message
+
+  def initialize(message)
+    @message = message
+  end
+
+  def seconds_since_boot
+    @seconds_since_boot ||= if tmp = message.to_s[/^\[(.*?)\]/, 1]
+      tmp.to_f
+    end
+  end
+
+  def seconds_ago
+    UPTIME - seconds_since_boot
+  end
+
+  def self.all
+    IO.popen("dmesg").map do |line|
+      Message.new(line.strip)
+    end
+  end
+end
+
+rescue_from_all do
+  smaller_is_worse!
+
+  attributes = {
+    :recent => 3600
+  }
+
+  OPTS = OptionParser.new do |o|
+    o.on("--recent VALUE", Integer, "Only look at recent seconds") do |value|
+      attributes[:recent] = value
+    end
+
+    o.on("-w VALUE", Integer, "Number of entries for warning") do |value|
+      attributes[:warning] = value
+    end
+
+    o.on("-c VALUE", Integer, "Number of entries for critical") do |value|
+      attributes[:critical] = value
+    end
+  end
+
+  OPTS.parse(ARGV)
+
+  validate_attributes!(attributes)
+
+  recent = attributes.fetch(:recent)
+
+  messages = Message.all.select { |m| m.seconds_ago < recent }
+  cnt = messages.count
+  
+  require "time"
+  puts "#{cnt} messages since #{(Time.now - recent).iso8601} (last #{recent} seconds)"
+
+  if cnt > attributes.fetch(:critical)
+    abort_critical
+  elsif cnt > attributes.fetch(:warning)
+    abort_warning
+  else
+    abort_ok
+  end
+end
