@@ -50,19 +50,24 @@ def abort_with_messages(messages)
 end
 
 def validate_presence(attributes, *keys)
-  keys.map { |key| "#{key.to_s.upcase} must be set" if attributes[key].nil? }.compact
+  keys.map do |key|
+    value = attributes.is_a?(Hash) ? attributes[key] : attributes.send(key)
+    "#{key.to_s.upcase} must be set" if value.nil?
+  end.compact
 end
 
 # smaller_is_worse should be used for e.g times ago
 # warning: 60s ago, critical: 600s is okay => (60 - 600) * -1 > 0
 def validate_thresholds(attributes)
+  critical = attributes.is_a?(Hash) ? attributes[:critical] : attributes.critical
+  warning = attributes.is_a?(Hash) ? attributes[:warning] : attributes.warning
   messages = []
-  messages << "CRITICAL must be set" if attributes[:critical].nil?
-  messages << "WARNING must be set" if attributes[:warning].nil?
-  if attributes[:warning] && attributes[:critical]
-    if ((attributes[:warning] - attributes[:critical]) * comparision_factor) <= 0
+  messages << "CRITICAL must be set" if critical.nil?
+  messages << "WARNING must be set" if warning.nil?
+  if warning && critical
+    if ((warning - critical) * comparision_factor) <= 0
       messages << "WARNING must be #{smaller_is_worse? ? "smaller" : "smaller"} than CRITICAL" 
-      end
+    end
   end
   messages
 end
