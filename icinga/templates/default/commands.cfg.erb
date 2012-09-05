@@ -24,6 +24,11 @@ define command {
 }
 
 define command {
+  command_name check_remote_file_age
+  command_line /opt/nrpe/libexec/check_nrpe -H $HOSTADDRESS$ -c check_file_age -a $ARG1$ $ARG2$ $ARG3$
+}
+
+define command {
   command_name check_solr_replication_age
   command_line /opt/nagios-ruby-plugins/libexec/check_solr_replication_age -H $ARG1$ -w $ARG2$ -c $ARG3$
 }
