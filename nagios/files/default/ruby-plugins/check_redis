@@ -1,0 +1,103 @@
+#!/usr/bin/env ruby
+require File.expand_path("../nagios.rb", __FILE__)
+
+class Attributes < Struct.new(:host, :port, :command, :warning, :critical)
+  def validate!
+    errors = []
+    errors << "host must be set" if self.host.nil?
+    errors << "command must be provided" if self.command.nil?
+    if self.command = "bgsave_status"
+      errors << "WARNING must be set" if self.warning.nil?
+      errors << "CRITICAL must be set" if self.critical.nil?
+      if self.warning && self.critical
+        errors << "WARNING must be smaller than CRITICAL" if self.warning >= self.critical
+      end
+    end
+    abort_with_messages(errors) if errors.any?
+  end
+end
+
+def fetch_redis_info(host, port)
+  require "socket"
+  port ||= 6379
+  TCPSocket.open(host, port) do |socket|
+    socket.write("INFO\r\n")
+    line = socket.readline
+    if len_s = line[/^\$(\d+)/, 1]
+      len = len_s.to_i
+      return socket.read(len)
+    end
+  end
+end
+
+def key_from_info(info, key)
+  if status = info[/^(#{key}:.*)/, 1]
+    status.strip
+  end
+end
+
+rescue_from_all do
+  atts = Attributes.new
+
+  OPTS = OptionParser.new do |o|
+    o.on("-H HOST", String, "Redis Host") do |value|
+      atts.host = value
+    end
+
+    o.on("-p PORT", String, "Redis Port") do |value|
+      atts.port = value
+    end
+
+    o.on("--command COMMAND", String, "Command (master_link_status,bgsave_status)") do |value|
+      atts.command = value
+    end
+
+    o.on("-w VALUE", Integer, "WARNING time since last save") do |value|
+      atts.warning = value
+    end
+
+    o.on("-c VALUE", Integer, "CRITICAL time since last save") do |value|
+      atts.critical = value
+    end
+  end
+
+  OPTS.parse(ARGV)
+
+  atts.validate!
+  info = fetch_redis_info(atts.host, atts.port)
+  case atts.command
+  when "master_link_status"
+    if status = key_from_info(info, :master_link_status)
+      puts status
+      if status == "master_link_status:up"
+        abort_ok
+      else
+        abort_critical
+      end
+    else
+      puts "no master_link_status found in info"
+      abort_critical
+    end
+  when "bgsave_status"
+    status = key_from_info(info, :rdb_last_bgsave_status)
+    if status
+      status
+      if last_save_s = key_from_info(info, :rdb_last_save_time)[/:(\d+)/, 1]
+        last_save = last_save_s.to_i
+        seconds_since_last_save = Time.now.to_i - last_save_s.to_i
+        require "time"
+        status << ",last_save:#{Time.at(last_save).iso8601} (#{seconds_since_last_save} seconds ago)"
+        puts status
+        if seconds_since_last_save > atts.critical
+          abort_critical
+        elsif seconds_since_last_save > atts.warning
+          abort_warning
+        else
+          abort_ok
+        end
+      end
+    end
+    puts status
+    abort_critical
+  end
+end
