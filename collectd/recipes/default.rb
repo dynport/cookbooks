@@ -40,7 +40,7 @@ directory PYHTON_DIR do
   mode "0755"
 end
 
-%w(solr_info redis_info).each do |file|
+%w(solr_info redis_info resque_info redis_client).each do |file|
   cookbook_file "/opt/collectd/lib/collectd/plugins/python/#{file}.py" do
     mode "0644"
     owner "collectd"
