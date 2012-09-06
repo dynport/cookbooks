@@ -22,7 +22,6 @@ class ResqueMonitor():
         self.verbose = config.get("Verbose", False)
         self.info("server config: host=%s, port=%s" % (self.host, self.port))
         self.redis_client = redis_client.RedisClient(host=self.host, port=self.port)
-        print "set redis client to %s" % (repr(selr.redis_client))
 
     def read(self, data=None):
         for key in self.queues():
