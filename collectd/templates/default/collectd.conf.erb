@@ -143,17 +143,18 @@ LoadPlugin nginx
 </Plugin>
 <% end %>
 
-<% if node.collectd[:mysql] %>
+<% if mysql = node.collectd[:mysql] %>
+<%
+  host = mysql[:host]
+  user = mysql[:user]
+%>
 LoadPlugin mysql
 <Plugin "mysql">
-  <Database "information_schema">
-    Host "localhost"
-    User "root"
-    Port 3306
-    <% if node.collectd[:mysql_slave] %>
-    SlaveStats true
-    SlaveNotifications true
-    <% end %>
+  <Database <%= mysql[:database].inspect %>>
+    Host <%= host.inspect if host %>
+    User <%= user.inspect if user %>
+    Port <%= mysql[:port] || 3306 %>
+    <%= %(Password "#{mysql[:password]}") if mysql[:password] %>
   </Database>
 </Plugin>
 <% end %>
