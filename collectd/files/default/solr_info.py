@@ -1,8 +1,4 @@
-if __name__ == "__main__":
-    print "DEBUG: using collectd_dummy"
-    import collectd_dummy as collectd
-else:
-    import collectd
+import collectd
 import optparse
 import json
 import httplib
