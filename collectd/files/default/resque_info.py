@@ -24,13 +24,23 @@ class ResqueMonitor():
         self.redis_client = redis_client.RedisClient(host=self.host, port=self.port)
 
     def read(self, data=None):
+        self.dispatch_queue_sized()
+        self.dispatch_failed()
+
+    def dispatch_failed(self):
+        type_instance = "failed"
+        value = int(self.redis_client.get("resque:stat:failed"))
+        val = collectd.Values(plugin=PLUGIN_NAME, type_instance=type_instance, values=[value], type="gauge")
+        self.info("Sending value: %s=%s" % (type_instance, value))
+        val.dispatch()
+
+    def dispatch_queue_sized(self):
         for key in self.queues():
             value = self.queue_size(key)
-            type_instance = "queues-%s" % (key)
+            type_instance = "queue-%s" % (key)
             val = collectd.Values(plugin=PLUGIN_NAME, type_instance=type_instance, values=[value], type="gauge")
             self.info("Sending value: %s=%s" % (type_instance, value))
             val.dispatch()
-            
 
     def queues(self):
         return self.redis_client.smembers("resque:queues") - set("*",)
