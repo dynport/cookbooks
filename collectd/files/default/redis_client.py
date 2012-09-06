@@ -39,7 +39,7 @@ class RedisClient(object):
                 return self.file_handle.read(to_read + 2)[0:-2]
         elif first_char == "*":
             to_read = int(line[1:-2])
-            return tuple([self.__read_raw__().strip() for i in range(to_read)])
+            return set([self.__read_raw__().strip() for i in range(to_read)])
         elif line.startswith("-ERR "):
             raise RuntimeError(line)
         else:
@@ -116,7 +116,7 @@ if __name__ == "__main__":
             self.assertEqual(self.client.sadd("set", "a"), 1)
             self.assertEqual(self.client.sadd("set", "a"), 0)
             self.assertEqual(self.client.sadd("set", "b"), 1)
-            self.assertEqual(("a", "b"), self.client.smembers("set"))
+            self.assertEqual(set(("a", "b")), self.client.smembers("set"))
 
         def testHashes(self):
             self.assertEqual(self.client.hset("hash", "a", "b"), 1)
