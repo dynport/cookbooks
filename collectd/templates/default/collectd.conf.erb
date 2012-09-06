@@ -62,6 +62,26 @@ LoadPlugin memcached
 <% end %>
 
 <%
+  resque_host = node.collectd[:resque_host]
+  resque_port = node.collectd[:resque_port]
+  if resque_host && resque_port
+%>
+<LoadPlugin python>
+  Globals true
+</LoadPlugin>
+<Plugin python>
+  ModulePath "/opt/collectd/lib/collectd/plugins/python"
+  Import "resque_info"
+
+  <Module resque_info>
+    Host <%= resque_host.inspect %>
+    Port <%= resque_port %>
+    Verbose false
+  </Module>
+</Plugin>
+<% end %>
+
+<%
   solr_host = node.collectd[:solr_host]
   solr_port = node.collectd[:solr_port]
   solr_path = node.collectd[:solr_path]
