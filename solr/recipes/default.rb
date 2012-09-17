@@ -2,7 +2,7 @@ include_recipe "java"
 
 INSTALL_DIR = node.source.install_dir
 SOLR_USER = "solr"
-SOLR_VERSION = "3.6.0"
+SOLR_VERSION = node.solr.version
 
 SOLR_DATA_DIR = node.solr.home
 SOLR_DIR = "#{INSTALL_DIR}/apache-solr-#{SOLR_VERSION}"
