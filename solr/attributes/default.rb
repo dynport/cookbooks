@@ -1,4 +1,4 @@
-default["solr"]["version"]          = "3.6.0"
+default["solr"]["version"]                 = "3.6.0"
 default["solr"]["java_heap_size"]          = "64M"
 default["solr"]["java_new_size"]           = "16M"
 default["solr"]["java_survivor_ratio"]     = "3"
