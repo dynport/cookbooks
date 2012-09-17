@@ -11,6 +11,7 @@ LoadPlugin interface
 LoadPlugin load
 LoadPlugin memory
 LoadPlugin swap
+
 <Plugin "swap">
   ReportByDevice false
 </Plugin>
@@ -129,12 +130,6 @@ LoadPlugin rrdtool
   WritesPerSecond 50
 </Plugin>
 <% end %>
-
-#LoadPlugin exec
-#<Plugin exec>
-#	Exec "user:group" "/path/to/exec"
-#	NotificationExec "user:group" "/path/to/exec"
-#</Plugin>
 
 <% if @nginx_url %>
 LoadPlugin nginx
