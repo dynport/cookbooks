@@ -71,7 +71,8 @@ LoadPlugin memcached
     Port <%= resque_port %>
     Verbose false
   </Module>
-<%
+<% end %>
+<%  
   solr_host = node.collectd[:solr_host]
   solr_port = node.collectd[:solr_port]
   solr_path = node.collectd[:solr_path]
@@ -85,7 +86,6 @@ LoadPlugin memcached
     Path <%= solr_path.inspect %>
     Verbose false
   </Module>
-<% end %>
 <% end %>
 </Plugin>
 
