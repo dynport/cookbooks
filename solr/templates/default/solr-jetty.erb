@@ -23,7 +23,7 @@ JAVA_SURVIVOR_RATIO="<%= node.solr.java_survivor_ratio %>"
 JAVA_OPTS="-XX:+UseParallelGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps"
 
 # Memory settings: Heap size
-JAVA_OPTS="$JAVA_OPTS -Xmx$JAVA_HEAP_SIZE -Xms$JAVA_NEW_SIZE +PrintCommandLineFlags"
+JAVA_OPTS="$JAVA_OPTS -Xmx$JAVA_HEAP_SIZE -Xms$JAVA_NEW_SIZE -XX:+PrintCommandLineFlags"
 
 #  $JAVA_OPTS $NEWRELIC_OPTS
 START_PREFIX="start-stop-daemon -c $USER -m --pidfile $PIDFILE --start --chdir /opt/apache-solr/example --exec /usr/bin/java -- $JAVA_OPTS"
