@@ -1,7 +1,7 @@
 include_recipe "source"
 package "libpcre3-dev"
 
-NAME_AND_VERSION = "haproxy-1.4.21"
+NAME_AND_VERSION = "haproxy-#{node.haproxy.version}"
 FILE_NAME = "#{NAME_AND_VERSION}.tar.gz"
 
 download_file "http://haproxy.1wt.eu/download/1.4/src/#{FILE_NAME}"
