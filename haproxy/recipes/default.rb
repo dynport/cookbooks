@@ -20,6 +20,7 @@ execute "install haproxy" do
     cd #{NAME_AND_VERSION}
     make TARGET=linux26 USE_STATIC_PCRE=1 && cp ./haproxy #{DIR}/haproxy
   "
+  creates "#{DIR}/haproxy"
 end
 
 link "/opt/haproxy" do
