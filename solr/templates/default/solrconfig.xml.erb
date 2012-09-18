@@ -373,9 +373,9 @@
 
   <query>
     <maxBooleanClauses>1024</maxBooleanClauses>
-    <filterCache class="solr.FastLRUCache" size="5120" initialSize="512" autowarmCount="0"/>
-    <queryResultCache class="solr.LRUCache" size="3072" initialSize="512" autowarmCount="0"/>
-    <documentCache class="solr.LRUCache" size="512" initialSize="512" autowarmCount="0"/>
+    <filterCache class="solr.FastLRUCache" size="<%= node.solr.filter_cache %>" initialSize="512" autowarmCount="0"/>
+    <queryResultCache class="solr.LRUCache" size="<%= node.solr.query_result_cache %>" initialSize="512" autowarmCount="0"/>
+    <documentCache class="solr.LRUCache" size="<%= node.solr.document_cache %>" initialSize="512" autowarmCount="0"/>
 
     <enableLazyFieldLoading>true</enableLazyFieldLoading>
     <queryResultWindowSize>20</queryResultWindowSize>
