@@ -22,14 +22,6 @@ link DIR do
 end
 
 template "#{VERSION_DIR}/statsdConfig.js" do
-  variables(
-    :graphite_port => node.statsd.graphite_port,
-    :graphite_host => node.statsd.graphite_host,
-    :port => node.statsd.port,
-    :address => node.statsd.address,
-    :mgmt_address => node.statsd[:mgmt_address],
-    :mgmt_port => node.statsd[:mgmt_port]
-  )
   mode "0644"
 end
 

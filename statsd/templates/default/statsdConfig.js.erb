@@ -1,8 +1,9 @@
 {
-  graphitePort: <%= @graphite_port %>,
-  graphiteHost: "<%= @graphite_host %>",
-  port: <%= @port  %>,
-  address: "<%= @address %>",
-  mgmt_port: <%= @mgmt_port %>,
-  mgmt_address: "<%= @mgmt_address %>"
+  graphitePort: <%= node.statsd.graphite_port %>,
+  graphiteHost: "<%= node.statsd.graphite_host %>",
+  port: <%= node.statsd.port  %>,
+  address: "<%= node.statsd.address %>",
+  mgmt_port: <%= node.statsd.mgmt_port %>,
+  mgmt_address: "<%= node.statsd.mgmt_address %>",
+  percentThreshold: <%= node.statsd.thresholds.to_json %>
 }
