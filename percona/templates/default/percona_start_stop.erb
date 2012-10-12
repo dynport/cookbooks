@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 ### BEGIN INIT INFO
-# Provides:          mysql
+# Provides:          percona-server
 # Required-Start:    $remote_fs $syslog
 # Required-Stop:     $remote_fs $syslog
 # Should-Start:      $network $named $time
@@ -23,11 +23,11 @@ test -x "${PERCONA_PREFIX}/bin/mysqld" || exit 0
 . /lib/lsb/init-functions
 
 SELF=$(cd $(dirname $0); pwd -P)/$(basename $0)
-CONF=/etc/mysql/my.cnf
-MYADMIN="${PERCONA_PREFIX}/bin/mysqladmin --defaults-file=/etc/mysql/my.cnf"
+CONF=<%= @defaults_file %>
+MYADMIN="${PERCONA_PREFIX}/bin/mysqladmin --defaults-file=$CONF"
 
 # priority can be overriden and "-s" adds output to stderr
-ERR_LOGGER="logger -p daemon.err -t /etc/init.d/mysql -i"
+ERR_LOGGER="logger -p daemon.err -t /etc/init.d/percona-server -i"
 
 # Safeguard (relative paths, core dumps..)
 umask 077
@@ -104,7 +104,7 @@ case "${1:-''}" in
      log_progress_msg "already running"
      log_end_msg 0
   else
-        "${PERCONA_PREFIX}"/bin/mysqld_safe > /dev/null 2>&1 &
+        "${PERCONA_PREFIX}"/bin/mysqld_safe --defaults-file=$CONF > /dev/null 2>&1 &
       # 6s was reported in #352070 to be too few when using ndbcluster
       for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14; do
         sleep 1

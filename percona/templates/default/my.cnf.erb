@@ -14,7 +14,7 @@ socket                         = <%= node.mysql.datadir %>/mysql.sock
 
 [mysqld]
 # GENERAL #
-user                           = mysql
+user                           = percona
 default_storage_engine         = InnoDB
 socket                         = <%= node.mysql.datadir %>/mysql.sock
 pid_file                       = <%= node.mysql.datadir %>/mysql.pid
