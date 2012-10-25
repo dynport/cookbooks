@@ -58,7 +58,3 @@ end
 link "/root/.my.cnf" do
   to defaults_file
 end
-
-service "percona-server" do
-  action [:enable, :start]
-end
