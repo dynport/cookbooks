@@ -42,7 +42,7 @@ cd $PERCONA_PREFIX
 #
 # Usage: void mysqld_get_param option
 mysqld_get_param() {
-  "${PERCONA_PREFIX}"/bin/mysqld --print-defaults \
+  "${PERCONA_PREFIX}"/bin/mysqld --defaults-file=$CONF --print-defaults \
     | tr " " "\n" \
     | grep -- "--$1" \
     | tail -n 1 \
