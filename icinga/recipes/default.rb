@@ -4,7 +4,7 @@ include_recipe "nagios::plugins"
 
 package "apache2"
 package "libgd2-xpm-dev"
-package "sendmail"
+package "mailutils"
 
 icinga = Icinga.new(self)
 
