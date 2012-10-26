@@ -5,7 +5,12 @@ NGINX_USER = node.www_user
 
 package "unzip"
 
-%w(libpcre3 libpcre3-dev libpcrecpp0 zlib1g-dev libssl-dev libgd2-xpm-dev).each { |pkg| package pkg }
+
+packages = value_for_platform(
+    ["centos","redhat","fedora"] => {'default' => ['patch', 'pcre-devel', 'openssl-devel']},
+    "default" => ['libpcre3', 'libpcre3-dev', 'libssl-dev', 'libpcrecpp0', 'zlib1g-dev', 'libgd2-xpm-dev']
+)
+packages.each { |pkg| package pkg }
 
 user NGINX_USER do
   action :create
@@ -71,7 +76,13 @@ end
 template "#{INSTALL_DIR}/nginx-#{NGINX_VERSION}/conf/nginx.conf"
 
 template "/etc/init.d/nginx" do
-  source "nginx.init.erb"
+  if platform_family?("debian")
+    source "nginx.init.erb"
+  elsif platform_family?("rhel")
+    source "nginx.init.centos.erb"
+  else
+    raise "Your platform is currently unsupported"
+  end
   mode "0755"
 end
 
