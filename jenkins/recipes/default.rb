@@ -32,8 +32,7 @@ directory JENKINS_JAR_DIR do
   recursive true
 end
 
-# jenkins_url = "http://mirrors.jenkins-ci.org"
-jenkins_url = "http://mirrors.esast.com"
+jenkins_url = "http://mirrors.jenkins-ci.org"
 
 remote_file JENKINS_PATH do
   source "#{jenkins_url}/war/#{node.jenkins.version}/jenkins.war"
