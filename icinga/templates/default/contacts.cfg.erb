@@ -2,7 +2,7 @@ define contact{
         contact_name                    icingaadmin             ; Short name of user
         use                             generic-contact         ; Inherit default values from generic-contact template (defined above)
         alias                           Icinga Admin            ; Full name of user
-        email                           icinga@localhost        ; <<***** CHANGE THIS TO YOUR EMAIL ADDRESS ******
+        email                           <%= node.icinga.default_email %>
 }
 
 define contactgroup{
