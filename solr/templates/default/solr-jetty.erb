@@ -18,6 +18,7 @@ PIDFILE=/var/run/<%= ["solr", @role].compact.join("_") %>.pid
 JAVA_HEAP_SIZE="<%= node.solr.java_heap_size %>"
 JAVA_NEW_SIZE="<%= node.solr.java_new_size %>"
 JAVA_SURVIVOR_RATIO="<%= node.solr.java_survivor_ratio %>"
+JAVA_PATH=<%= node.solr.java_path %>
 
 # Garbage collections - use concurrent low pause collectors
 JAVA_OPTS="-XX:+UseParallelGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps"
@@ -26,7 +27,7 @@ JAVA_OPTS="-XX:+UseParallelGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps"
 JAVA_OPTS="$JAVA_OPTS -Xmx$JAVA_HEAP_SIZE -Xms$JAVA_NEW_SIZE -XX:+PrintCommandLineFlags"
 
 #  $JAVA_OPTS $NEWRELIC_OPTS
-START_PREFIX="start-stop-daemon -c $USER -m --pidfile $PIDFILE --start --chdir /opt/apache-solr/example --exec /usr/bin/java -- $JAVA_OPTS"
+START_PREFIX="start-stop-daemon -c $USER -m --pidfile $PIDFILE --start --chdir /opt/apache-solr/example --exec $JAVA_PATH -- $JAVA_OPTS"
 
 SOLR_HOME="<%= @solr_home %>"
 if [[ "$PREFILL" ]]; then
