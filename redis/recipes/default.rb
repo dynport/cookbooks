@@ -39,12 +39,10 @@ template "/etc/redis.conf" do
   source "redis.conf.erb"
   mode 0644
   owner REDIS_USER
-  group REDIS_USER
 end
 
 template "/etc/init.d/redis-server" do
   source "redis-server.erb"
   mode 0744
   owner REDIS_USER
-  group REDIS_USER
 end
