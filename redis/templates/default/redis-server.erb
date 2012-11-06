@@ -16,6 +16,8 @@ DAEMON=/opt/redis/bin/redis-server
 DAEMON_ARGS=/etc/redis.conf
 NAME=redis-server
 DESC=redis-server
+USER=<%= node.redis.user %>
+GROUP=<%= node.redis.group %>
 
 RUNDIR=/var/run/redis
 PIDFILE=/var/run/redis.pid
@@ -29,9 +31,9 @@ case "$1" in
   echo -n "Starting $DESC: "
   mkdir -p $RUNDIR
   touch $PIDFILE
-  chown redis:redis $RUNDIR $PIDFILE
+  chown $USER:$GROUP $RUNDIR $PIDFILE
   chmod 755 $RUNDIR
-  if start-stop-daemon --start --quiet --umask 007 --pidfile $PIDFILE --chuid redis:redis --exec $DAEMON -- $DAEMON_ARGS
+  if start-stop-daemon --start --quiet --umask 007 --pidfile $PIDFILE --chuid $USER:$GROUP --exec $DAEMON -- $DAEMON_ARGS
   then
     echo "$NAME."
   else
