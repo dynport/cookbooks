@@ -8,7 +8,7 @@ timeout 0
 loglevel notice
 syslog-enabled yes
 syslog-ident redis
-databases 16
+databases <%= node.redis.databases %>
 rdbcompression yes
 dbfilename dump.rdb
 dir /data/redis
