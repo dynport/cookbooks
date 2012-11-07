@@ -47,9 +47,13 @@ table_definition_cache         = 1024
 table_open_cache               = 2048
 
 # INNODB #
+innodb_data_file_path          = ibdata1:10M:autoextend
 innodb_flush_method            = O_DIRECT
 innodb_log_files_in_group      = 2
-innodb_log_file_size           = 512M
+innodb_log_file_size           = 536870912
+innodb_fast_checksum           = 0
+innodb_page_size               = 16384
+innodb_log_block_size          = 512
 innodb_flush_log_at_trx_commit = 1
 innodb_file_per_table          = 1
 innodb_buffer_pool_size        = <%= node.mysql.buffer_pool_size %>
