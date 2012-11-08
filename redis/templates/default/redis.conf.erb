@@ -36,6 +36,9 @@ hash-max-zipmap-value 64
 hash-max-ziplist-entries 512
 hash-max-ziplist-value 64
 slave-read-only <%= node.redis[:read_only_slave] ? "yes" : "no" %>
+<% if node.redis[:master] %>
+slaveof <%= node.redis.master.host %> <%= node.redis.master.port %>
+<% end %>
 <% end %>
 list-max-ziplist-entries 512
 list-max-ziplist-value 64
