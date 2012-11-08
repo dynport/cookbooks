@@ -13,7 +13,7 @@ rdbcompression yes
 dbfilename dump.rdb
 dir /data/redis
 slave-serve-stale-data yes
-appendonly no
+appendonly <%= node.redis.aof ? "yes" : "no" %>
 appendfsync everysec
 no-appendfsync-on-rewrite no
 auto-aof-rewrite-percentage 100
