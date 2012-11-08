@@ -1,126 +1,158 @@
 #!/bin/sh
-#
-# chkconfig: - 85 15
-# description: HA-Proxy is a TCP/HTTP reverse proxy which is particularly suited \
-#              for high availability environments.
-# processname: haproxy
-# config: /opt/haproxy/haproxy.cfg
-# pidfile: /var/run/haproxy.pid
+### BEGIN INIT INFO
+# Provides:          haproxy
+# Required-Start:    $local_fs $network $remote_fs
+# Required-Stop:     $local_fs $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: fast and reliable load balancing reverse proxy
+# Description:       This file should be used to start and stop haproxy.
+### END INIT INFO
 
-# Script Author: Simon Matter <simon.matter@invoca.ch>
-# Version: 2004060600
+# Author: Arnaud Cornet <acornet@debian.org>
 
-# Source function library.
-if [ -f /etc/init.d/functions ]; then
-  . /etc/init.d/functions
-elif [ -f /etc/rc.d/init.d/functions ] ; then
-  . /etc/rc.d/init.d/functions
-else
-  exit 0
+PATH=/opt/haproxy/sbin:/sbin:/usr/sbin:/bin:/usr/bin
+PIDFILE=/var/run/haproxy.pid
+CONFIG=/opt/haproxy/haproxy.cfg
+HAPROXY=/opt/haproxy/sbin/haproxy
+EXTRAOPTS=
+
+test -x $HAPROXY || exit 0
+test -f "$CONFIG" || exit 0
+
+if [ -e /etc/default/haproxy ]; then
+  . /etc/default/haproxy
 fi
 
-# Source networking configuration.
-. /etc/sysconfig/network
+[ -f /etc/default/rcS ] && . /etc/default/rcS
+. /lib/lsb/init-functions
 
-# Check that networking is up.
-[ ${NETWORKING} = "no" ] && exit 0
 
-# This is our service name
-BASENAME=`basename $0`
-if [ -L $0 ]; then
-  BASENAME=`find $0 -name $BASENAME -printf %l`
-  BASENAME=`basename $BASENAME`
-fi
+haproxy_start()
+{
+  start-stop-daemon --start --pidfile "$PIDFILE" \
+    --exec $HAPROXY -- -f "$CONFIG" -D -p "$PIDFILE" \
+    $EXTRAOPTS || return 2
+  return 0
+}
 
-CONFIG_PATH=/opt/$BASENAME/$BASENAME.cfg
-BIN_PATH=/opt/haproxy/sbin/haproxy
+haproxy_stop()
+{
+  if [ ! -f $PIDFILE ] ; then
+    # This is a success according to LSB
+    return 0
+  fi
+  for pid in $(cat $PIDFILE) ; do
+    /bin/kill $pid || return 4
+  done
+  rm -f $PIDFILE
+  return 0
+}
 
-[ -f $CONFIG_PATH ] || exit 1
+haproxy_reload()
+{
+  $HAPROXY -f "$CONFIG" -p $PIDFILE -D $EXTRAOPTS -sf $(cat $PIDFILE) \
+    || return 2
+  return 0
+}
 
-RETVAL=0
-
-start() {
-  $BIN_PATH -c -q -f $CONFIG_PATH
-  if [ $? -ne 0 ]; then
-    echo "Errors found in configuration file, check it with '$BASENAME check'."
-    return 1
+haproxy_status()
+{
+  if [ ! -f $PIDFILE ] ; then
+    # program not running
+    return 3
   fi
 
-  echo -n "Starting $BASENAME: "
-  daemon $BIN_PATH -D -f $CONFIG_PATH -p /var/run/$BASENAME.pid
-  RETVAL=$?
-  echo
-  [ $RETVAL -eq 0 ] && touch /var/lock/subsys/$BASENAME
-  return $RETVAL
+  for pid in $(cat $PIDFILE) ; do
+    if ! ps --no-headers p "$pid" | grep haproxy > /dev/null ; then
+      # program running, bogus pidfile
+      return 1
+    fi
+  done
+
+  return 0
 }
 
-stop() {
-  echo -n "Shutting down $BASENAME: "
-  killproc $BASENAME -USR1
-  RETVAL=$?
-  echo
-  [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/$BASENAME
-  [ $RETVAL -eq 0 ] && rm -f /var/run/$BASENAME.pid
-  return $RETVAL
-}
 
-restart() {
-  $BIN_PATH -c -q -f $CONFIG_PATH
-  if [ $? -ne 0 ]; then
-    echo "Errors found in configuration file, check it with '$BASENAME check'."
-    return 1
-  fi
-  stop
-  start
-}
-
-reload() {
-  $BIN_PATH -c -q -f $CONFIG_PATH
-  if [ $? -ne 0 ]; then
-    echo "Errors found in configuration file, check it with '$BASENAME check'."
-    return 1
-  fi
-  $BIN_PATH -D -f $CONFIG_PATH -p /var/run/$BASENAME.pid -sf $(cat /var/run/$BASENAME.pid)
-}
-
-check() {
-  $BIN_PATH -c -q -V -f $CONFIG_PATH
-}
-
-rhstatus() {
-  status $BASENAME
-}
-
-condrestart() {
-  [ -e /var/lock/subsys/$BASENAME ] && restart || :
-}
-
-# See how we were called.
 case "$1" in
-  start)
-    start
+start)
+  log_daemon_msg "Starting haproxy" "haproxy"
+  haproxy_start
+  ret=$?
+  case "$ret" in
+  0)
+    log_end_msg 0
     ;;
-  stop)
-    stop
+  1)
+    log_end_msg 1
+    echo "pid file '$PIDFILE' found, haproxy not started."
     ;;
-  restart)
-    restart
+  2)
+    log_end_msg 1
     ;;
-  reload)
-    reload
+  esac
+  exit $ret
+  ;;
+stop)
+  log_daemon_msg "Stopping haproxy" "haproxy"
+  haproxy_stop
+  ret=$?
+  case "$ret" in
+  0|1)
+    log_end_msg 0
     ;;
-  condrestart)
-    condrestart
+  2)
+    log_end_msg 1
     ;;
-  status)
-    rhstatus
+  esac
+  exit $ret
+  ;;
+reload|force-reload)
+  log_daemon_msg "Reloading haproxy" "haproxy"
+  haproxy_reload
+  case "$?" in
+  0|1)
+    log_end_msg 0
     ;;
-  check)
-    check
+  2)
+    log_end_msg 1
+    ;;
+  esac
+  ;;
+restart)
+  log_daemon_msg "Restarting haproxy" "haproxy"
+  haproxy_stop
+  haproxy_start
+  case "$?" in
+  0)
+    log_end_msg 0
+    ;;
+  1)
+    log_end_msg 1
+    ;;
+  2)
+    log_end_msg 1
+    ;;
+  esac
+  ;;
+status)
+  haproxy_status
+  ret=$?
+  case "$ret" in
+  0)
+    echo "haproxy is running."
+    ;;
+  1)
+    echo "haproxy dead, but $PIDFILE exists."
     ;;
   *)
-    echo $"Usage: $BASENAME {start|stop|restart|reload|condrestart|status|check}"
-    exit 1
+    echo "haproxy not running."
+    ;;
+  esac
+  exit $ret
+  ;;
+*)
+  echo "Usage: /etc/init.d/haproxy {start|stop|reload|restart|status}"
+  exit 2
+  ;;
 esac
- 
-exit $?
