@@ -24,6 +24,11 @@ define command {
 }
 
 define command {
+  command_name check_remote_load
+  command_line /opt/nrpe/libexec/check_nrpe -H $HOSTADDRESS$ -c check_load -a $ARG1$ $ARG2$
+}
+
+define command {
   command_name check_remote_file_age
   command_line /opt/nrpe/libexec/check_nrpe -H $HOSTADDRESS$ -c check_file_age -a $ARG1$ $ARG2$ $ARG3$
 }
