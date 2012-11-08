@@ -21,7 +21,7 @@ auto-aof-rewrite-min-size 64mb
 slowlog-log-slower-than 10000
 slowlog-max-len 1024
 <% if node.redis[:save] %>
-<%= node.redis[:save] %>
+save <%= node.redis[:save] %>
 <% end %>
 <% if node.redis[:version][/2\.4/] %>
 vm-enabled no
