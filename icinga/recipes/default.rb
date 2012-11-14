@@ -34,9 +34,16 @@ end
 
 icinga.create_all_dirs!
 
-%w(templates hosts commands contacts services timeperiods).each do |cfg_name|
+%w(templates hosts commands services timeperiods).each do |cfg_name|
   icinga.write_config(cfg_name)
 end
+
+contacts = node.icinga[:contacts].keys.map do |key|
+  c = node.icinga[:contacts][key]
+  { :name => c[:name], :email => c[:email], :short_name => c[:short_name] }
+end
+
+icinga.write_config("contacts", nil, :contacts => contacts)
 
 %w(icinga.cfg cgi.cfg).each do |cfg_file|
   template "#{icinga.etc_dir}/#{cfg_file}" do

@@ -1,12 +1,14 @@
+<% @contacts.each do |contact| %>
 define contact{
-        contact_name                    icingaadmin             ; Short name of user
-        use                             generic-contact         ; Inherit default values from generic-contact template (defined above)
-        alias                           Icinga Admin            ; Full name of user
-        email                           <%= node.icinga.default_email %>
+        contact_name                    <%= contact[:short_name] %> ; Short name of user
+        use                             generic-contact           ; Inherit default values from generic-contact template (defined above)
+        alias                           <%= contact[:name] %>       ; Full name of user
+        email                           <%= contact[:email] %>
 }
+<% end %>
 
 define contactgroup{
         contactgroup_name       admins
         alias                   Icinga Administrators
-        members                 icingaadmin
+        members                 <%= @contacts.map { |c| c[:short_name] }.join(",") %>
 }
