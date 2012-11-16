@@ -9,7 +9,7 @@ def download_file(url)
   if node[:s3_proxy]
     execute "#{url} from s3" do
       cwd src_dir
-      command "wget '#{node.s3_proxy}/#{file_name}' && chmod 0644 #{path}; echo 'ok'"
+      command "wget '#{node.s3_proxy}/#{file_name}' -O #{file_name}.tmp && mv #{file_name}.tmp #{file_name} && chmod 0644 #{path}; echo 'ok'"
       not_if "test -e #{path}"
     end
   end
