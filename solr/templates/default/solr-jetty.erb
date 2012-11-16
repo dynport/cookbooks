@@ -26,6 +26,10 @@ JAVA_OPTS="-XX:+UseParallelGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps"
 # Memory settings: Heap size
 JAVA_OPTS="$JAVA_OPTS -Xmx$JAVA_HEAP_SIZE -Xms$JAVA_NEW_SIZE -XX:+PrintCommandLineFlags"
 
+<% if newrelic_agent_path = node[:newrelic_agent_path] %>
+JAVA_OPTS="$JAVA_OPTS -javaagent:<%= newrelic_agent_path %>"
+<% end %>
+
 #  $JAVA_OPTS $NEWRELIC_OPTS
 START_PREFIX="start-stop-daemon -c $USER -m --pidfile $PIDFILE --start --chdir /opt/apache-solr/example --exec $JAVA_PATH -- $JAVA_OPTS"
 
