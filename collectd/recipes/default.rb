@@ -14,11 +14,7 @@ download_file "http://collectd.org/files/#{COLLECTD_FILE}"
 
 execute "install collected" do
   command <<-CMD
-    tar xvfz #{COLLECTD_FILE}
-    cd #{COLLECTD_PREFIX}
-    ./configure --prefix=#{COLLECTD_DIR}
-    make
-    make install
+    tar xvfz #{COLLECTD_FILE} && cd #{COLLECTD_PREFIX} && ./configure --prefix=#{COLLECTD_DIR} && make && make install
   CMD
   creates "#{COLLECTD_DIR}/sbin/collectd"
   cwd src_dir
