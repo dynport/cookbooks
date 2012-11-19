@@ -257,120 +257,14 @@
 
   </mainIndex>
 
-  <!-- JMX
-       
-       This example enables JMX if and only if an existing MBeanServer
-       is found, use this if you want to configure JMX through JVM
-       parameters. Remove this to disable exposing Solr configuration
-       and statistics to JMX.
-
-       For more details see http://wiki.apache.org/solr/SolrJmx
-    -->
-  <jmx />
-  <!-- If you want to connect to a particular server, specify the
-       agentId 
-    -->
-  <!-- <jmx agentId="myAgent" /> -->
-  <!-- If you want to start a new MBeanServer, specify the serviceUrl -->
-  <!-- <jmx serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:9999/solr"/>
-    -->
-
-  <!-- The default high-performance update handler -->
   <updateHandler class="solr.DirectUpdateHandler2">
-
-    <!-- AutoCommit
-
-         Perform a <commit/> automatically under certain conditions.
-         Instead of enabling autoCommit, consider using "commitWithin"
-         when adding documents. 
-
-         http://wiki.apache.org/solr/UpdateXmlMessages
-
-         maxDocs - Maximum number of documents to add since the last
-                   commit before automaticly triggering a new commit.
-
-         maxTime - Maximum amount of time that is allowed to pass
-                   since a document was added before automaticly
-                   triggering a new commit. 
-      -->
-    <!--
-       <autoCommit> 
-         <maxDocs>10000</maxDocs>
-         <maxTime>1000</maxTime> 
-       </autoCommit>
-      -->
-
-    <!-- Update Related Event Listeners
-         
-         Various IndexWriter realted events can trigger Listeners to
-         take actions.
-
-         postCommit - fired after every commit or optimize command
-         postOptimize - fired after every optimize command
-      -->
-    <!-- The RunExecutableListener executes an external command from a
-         hook such as postCommit or postOptimize.
-         
-         exe - the name of the executable to run
-         dir - dir to use as the current working directory. (default=".")
-         wait - the calling thread waits until the executable returns. 
-                (default="true")
-         args - the arguments to pass to the program.  (default is none)
-         env - environment variables to set.  (default is none)
-      -->
-    <!-- This example shows how RunExecutableListener could be used
-         with the script based replication...
-         http://wiki.apache.org/solr/CollectionDistribution
-      -->
-    <!--
-       <listener event="postCommit" class="solr.RunExecutableListener">
-         <str name="exe">solr/bin/snapshooter</str>
-         <str name="dir">.</str>
-         <bool name="wait">true</bool>
-         <arr name="args"> <str>arg1</str> <str>arg2</str> </arr>
-         <arr name="env"> <str>MYVAR=val1</str> </arr>
-       </listener>
-      -->
+    <% if commit_within = node.solr[:commit_within] %>
+     <autoCommit> 
+       <maxTime><%= commit_within %></maxTime> 
+     </autoCommit>
+    <% end %>
   </updateHandler>
   
-  <!-- IndexReaderFactory
-
-       Use the following format to specify a custom IndexReaderFactory,
-       which allows for alternate IndexReader implementations.
-
-       ** Experimental Feature **
-
-       Please note - Using a custom IndexReaderFactory may prevent
-       certain other features from working. The API to
-       IndexReaderFactory may change without warning or may even be
-       removed from future releases if the problems cannot be
-       resolved.
-
-
-       ** Features that may not work with custom IndexReaderFactory **
-
-       The ReplicationHandler assumes a disk-resident index. Using a
-       custom IndexReader implementation may cause incompatibility
-       with ReplicationHandler and may cause replication to not work
-       correctly. See SOLR-1366 for details.
-
-    -->
-  <!--
-  <indexReaderFactory name="IndexReaderFactory" class="package.class">
-    <str name="someArg">Some Value</str>
-  </indexReaderFactory >
-  -->
-  <!-- By explicitly declaring the Factory, the termIndexDivisor can
-       be specified.
-    -->
-  <!--
-     <indexReaderFactory name="IndexReaderFactory" 
-                         class="solr.StandardIndexReaderFactory">
-       <int name="setTermIndexDivisor">12</int>
-     </indexReaderFactory >
-    -->
-
-
   <query>
     <maxBooleanClauses>1024</maxBooleanClauses>
     <filterCache class="solr.FastLRUCache" size="<%= node.solr.filter_cache %>" initialSize="512" autowarmCount="0"/>
@@ -841,8 +735,8 @@
     <lst name="slave">
       <str name="enable">${enable.slave:false}</str>
       <str name="masterUrl">${master.url:""}</str>
-      <% if @poll_interval %>
-      <str name="pollInterval"><%= @poll_interval %></str>
+      <% if poll_interval = node.solr[:replication_poll_interval] %>
+      <str name="pollInterval"><%= poll_interval %></str>
       <% end %>
     </lst>
   </requestHandler>
