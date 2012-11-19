@@ -60,6 +60,7 @@ case $1 in
     kill)
         echo "killing SOLR"
         start-stop-daemon --pidfile $PIDFILE --stop -s KILL
+        ;;
     restart)
   $0 stop
   sleep 10s
