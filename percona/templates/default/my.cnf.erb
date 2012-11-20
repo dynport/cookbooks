@@ -12,6 +12,9 @@ server-id                      = <%= server_id %>
 [mysqladmin]
 socket                         = <%= node.mysql.datadir %>/mysql.sock
 
+[mysqldump]
+socket                         = <%= node.mysql.datadir %>/mysql.sock
+
 [mysqld]
 # GENERAL #
 user                           = percona
