@@ -4,7 +4,7 @@ icinga = Icinga.new(self)
 
 user icinga.username
 
-path = "/opt/nagios-ruby-plugins"
+path = "/opt/nagios-custom-plugins"
 libexec_path = "#{path}/libexec"
 
 [path, libexec_path].each do |dir|
@@ -15,11 +15,11 @@ libexec_path = "#{path}/libexec"
   end
 end
 
-Dir.glob(File.expand_path("../../files/default/ruby-plugins/*", __FILE__)).each do |path|
+Dir.glob(File.expand_path("../../files/default/custom-plugins/*", __FILE__)).each do |path|
   file = File.basename(path)
   cookbook_file "#{libexec_path}/#{file}" do
     owner icinga.username
     mode "0755"
-    source "ruby-plugins/#{file}"
+    source "custom-plugins/#{file}"
   end
 end
