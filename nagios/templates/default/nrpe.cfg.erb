@@ -13,4 +13,5 @@ command[check_load]=/opt/nagios-plugins/libexec/check_load -r -w $ARG1$ -c $ARG2
 command[check_disk]=/opt/nagios-plugins/libexec/check_disk -w $ARG1$ -c $ARG2$ -p $ARG3$
 command[check_swap]=/opt/nagios-plugins/libexec/check_swap -w $ARG1$ -c $ARG2$
 command[check_file_age]=/opt/nagios-plugins/libexec/check_file_age -w $ARG1$ -c $ARG2$ -f $ARG3$
-command[check_dmesg]=/opt/nagios-ruby-plugins/libexec/check_dmesg -w $ARG1$ -c $ARG2$
+command[check_dmesg]=/opt/nagios-custom-plugins/libexec/check_dmesg -w $ARG1$ -c $ARG2$
+command[check_md_raid]=/opt/nagios-custom-plugins/libexec/check_md_raid
