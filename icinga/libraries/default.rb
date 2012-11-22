@@ -61,25 +61,15 @@ class Icinga
     @dirs_created = true
   end
 
-  def setup_restart_icinga!
-    return if @setup_restart_icinga
-    context.execute "restart_icinga" do
-      command "/etc/init.d/icinga restart"
-      action :nothing
-    end
-    @setup_restart_icinga = true
-  end
-
   def write_config(file_name, custom_source = nil, custom_variables = {})
     create_all_dirs!
-    setup_restart_icinga!
 
     context.template "#{conf_d_dir}/#{file_name}.cfg" do
       mode "0644"
       owner "icinga"
       variables custom_variables
       source custom_source
-      notifies :run, "execute[restart_icinga]"
+      notifies :restart, "service[icinga]"
     end
   end
 end

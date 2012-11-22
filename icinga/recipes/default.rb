@@ -40,6 +40,10 @@ end
 
 icinga.create_all_dirs!
 
+service "icinga" do
+  action [:enable, :start]
+end
+
 %w(templates hosts commands services timeperiods).each do |cfg_name|
   icinga.write_config(cfg_name)
 end
@@ -81,10 +85,6 @@ end
 
 link "/usr/lib/cgi-bin/icinga" do
   to "/opt/icinga/sbin"
-end
-
-service "icinga" do
-  action [:enable, :start]
 end
 
 execute "reload_apache" do
