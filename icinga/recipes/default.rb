@@ -32,6 +32,12 @@ execute "install icinga" do
   notifies :run, "execute[reload_apache]"
 end
 
+template "/etc/apache2/conf.d/icinga.conf" do
+  mode "0644"
+  source "icinga.apache.conf"
+  notifies :run, "execute[reload_apache]"
+end
+
 icinga.create_all_dirs!
 
 %w(templates hosts commands services timeperiods).each do |cfg_name|
