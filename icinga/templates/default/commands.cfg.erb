@@ -39,6 +39,11 @@ define command {
 }
 
 define command {
+  command_name check_remote_md_raid
+  command_line /opt/nrpe/libexec/check_nrpe -H $HOSTADDRESS$ -c check_md_raid
+}
+
+define command {
   command_name check_solr_replication_age
   command_line /opt/nagios-custom-plugins/libexec/check_solr_replication_age -H $ARG1$ -w $ARG2$ -c $ARG3$
 }
