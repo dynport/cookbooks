@@ -1,5 +1,10 @@
 include_recipe "source"
-package "libssl-dev"
+
+packages = value_for_platform(
+    ["centos","redhat","fedora"] => {'default' => ['openssl-devel']},
+    "default" => ['libssl-dev']
+)
+packages.each { |pkg| package pkg }
 
 version = node.nagios.plugins.version
 name = "nagios-plugins-#{version}"

@@ -1,8 +1,11 @@
 include_recipe "source"
 include_recipe "nagios::plugins"
 
-package "build-essential"
-package "libssl-dev"
+packages = value_for_platform(
+    ["centos","redhat","fedora"] => {'default' => ['openssl-devel']},
+    "default" => ['build-essential','libssl-dev']
+)
+packages.each { |pkg| package pkg }
 
 user "icinga"
 
