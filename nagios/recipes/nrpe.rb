@@ -21,8 +21,15 @@ user "nagios"
 
 execute "install nrpe" do
   cwd SRC_DIR
+
+  init_script = if platform_family?("debian")
+    "init-script.debian"
+  else
+    "init-script"
+  end
+
   command "
-    tar xvfz #{file_name} && cd #{name} && ./configure --enable-command-args --prefix=/opt/#{name} && make all && make install-plugin install-daemon install-daemon-config && cp /opt/src/#{name}/init-script.debian /etc/init.d/nrpe && chmod 755 /etc/init.d/nrpe
+    tar xvfz #{file_name} && cd #{name} && ./configure --enable-command-args --prefix=/opt/#{name} && make all && make install-plugin install-daemon install-daemon-config && cp /opt/src/#{name}/#{init_script} /etc/init.d/nrpe && chmod 755 /etc/init.d/nrpe
   "
   creates "/opt/#{name}/bin/nrpe"
 end
@@ -43,11 +50,6 @@ template "/opt/#{name}/etc/nrpe.cfg" do
   notifies :restart, "service[nrpe]"
   owner "icinga"
   mode "0644"
-end
-
-template "/etc/init.d/nrpe" do
-  mode "0755"
-  source "nrpe-init-script.erb"
 end
 
 service "nrpe" do
