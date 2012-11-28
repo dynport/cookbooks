@@ -9,6 +9,7 @@ download_file "https://github.com/downloads/libevent/libevent/#{libevent_file}"
 execute "build libevent" do
   cwd "/opt/src"
   command "tar xvfz #{libevent_file} && cd libevent-#{node.libevent.version}-stable && ./configure --prefix=#{libevent_path} && make && make install"
+  not_if "test -e /opt/#{libevent_name}/lib/libevent.so"
 end
 
 tmux_name = "tmux-#{node.tmux.version}"
@@ -23,6 +24,7 @@ execute "install tmux" do
   command <<-CMD
     tar xvfz #{tmux_file} && cd #{tmux_name} && ./configure --prefix=/opt/#{tmux_name} --enable-static && make && make install
   CMD
+  not_if "test -e /opt/#{tmux_name}/bin/tmux"
   env(
     "CFLAGS" => "-I#{libevent_path}/include",
     "LDFLAGS" => "-L#{libevent_path}/lib"
