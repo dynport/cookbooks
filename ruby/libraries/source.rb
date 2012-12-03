@@ -3,7 +3,7 @@ def install_ruby(version, attributes = {})
   name = "ruby-#{version}"
 
   download_file "http://ftp.ruby-lang.org/pub/ruby/1.9/#{name}.tar.gz"
-  %w(build-essential libyaml-dev libxml2-dev libxslt-dev libreadline-dev libssl-dev zlib1g-dev).each do |pkg|
+  %w(build-essential libyaml-dev libxml2-dev libxslt1-dev libreadline-dev libssl-dev zlib1g-dev).each do |pkg|
     package pkg
   end
 
