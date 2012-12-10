@@ -29,9 +29,13 @@ execute "install nrpe" do
   end
 
   command "
-    tar xvfz #{file_name} && cd #{name} && ./configure --enable-command-args --prefix=/opt/#{name} && make all && make install-plugin install-daemon install-daemon-config && cp /opt/src/#{name}/#{init_script} /etc/init.d/nrpe && chmod 755 /etc/init.d/nrpe
-  "
+    tar xvfz #{file_name} && cd #{name} && ./configure --enable-command-args --prefix=/opt/#{name} && make all && make install-plugin install-daemon install-daemon-config"
   creates "/opt/#{name}/bin/nrpe"
+end
+
+template "/etc/init.d/nrpe" do
+  mode "0755"
+  source "nrpe.start.stop.erb"
 end
 
 link "/opt/nrpe" do
