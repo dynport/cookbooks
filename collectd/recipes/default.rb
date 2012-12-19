@@ -6,7 +6,7 @@ COLLECTD_PREFIX = "collectd-#{node.collectd.version}"
 COLLECTD_FILE = "#{COLLECTD_PREFIX}.tar.gz"
 COLLECTD_DIR = "/opt/#{COLLECTD_PREFIX}"
 
-%w(python-dev libperl-dev librrd-dev libdbd-mysql libyajl-dev yajl-tools libcurl4-openssl-dev libdbi0-dev).each do |name|
+%w(python-dev libperl-dev librrd-dev libdbd-mysql libyajl-dev yajl-tools libcurl4-openssl-dev libdbi0-dev libgcrypt11-dev).each do |name|
   package name
 end
 
