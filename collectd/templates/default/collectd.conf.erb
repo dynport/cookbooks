@@ -150,10 +150,10 @@ LoadPlugin dbi
       ValuesFrom "Seconds_Behind_Master"
     </Result>
   </Query>
-  <Database "customers_db">
+  <Database "<%= node.collectd[:mysql][:database] || "customers_db" %>">
     Driver "mysql"
     DriverOption "host" "localhost"
-    DriverOption "username" "collectd"
+    DriverOption "username" "<%= node.collectd[:mysql][:user] || "collectd" %>"
     DriverOption "dbname" "information_schema"
     Query "seconds_behind_master"
   </Database>
